@@ -87,25 +87,6 @@ fit %>%
          score = format(score, digits = 3)) %>% 
   knitr::kable(caption = "All hits")
 
-## ----true_positive_rate, eval = test_protti, fig.align = "center", echo=FALSE, fig.width = 7, fig.height = 5----
-fit %>% 
-  filter(passed_filter == TRUE) %>% 
-  mutate(binds_treatment = pg_protein_accessions == "P62942") %>%  # create new column with prior knowledge about binding partners of treatment
-  mutate(true_positive_rate = cumsum(binds_treatment)) %>% 
-  ggplot(aes(x = rank, y = true_positive_rate)) +
-  geom_line(size = 1.5, col = "blue") +
-  geom_abline(intercept = 0, slope = 1, color = "grey", size = 1) +
-  scale_x_continuous(limits = c(0,20), expand = c(0, 0)) +
-  scale_y_continuous(limits = c(0,20), expand = c(0, 0)) +
-  labs(title = "True positive rate evaluation", x = "True positive + false positive", y = "True positive") +
-  theme_bw() + 
-  theme(plot.title = ggplot2::element_text(size = 20),
-        axis.title.x = ggplot2::element_text(size = 15),
-        axis.text.y = ggplot2::element_text(size = 15),
-        axis.text.x = ggplot2::element_text(size = 15),
-        axis.title.y = ggplot2::element_text(size = 15),
-        plot.margin = margin(c(10, 20, 10, 10)))
-
 ## ----model_plot, eval = test_protti, fig.align = "center", fig.width = 7, fig.height = 5, message = FALSE, warning = FALSE----
 # Model plotting
 plot_drc_4p(fit,
