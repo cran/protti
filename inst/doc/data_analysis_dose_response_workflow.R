@@ -24,8 +24,9 @@ utils::data("rapamycin_dose_response")
 data_normalised <- rapamycin_dose_response %>% 
   filter(eg_is_decoy == FALSE) %>% 
   mutate(intensity_log2 = log2(fg_quantity)) %>% 
-  median_normalisation(sample = r_file_name,
-                       intensity_log2 = intensity_log2) %>% 
+  normalise(sample = r_file_name,
+            intensity_log2 = intensity_log2,
+            method = "median") %>% 
   filter(pep_is_proteotypic == TRUE)
 
 ## ----intensity_distribution, eval = test_protti, fig.align = "center", fig.width = 7, fig.height = 5----
@@ -59,7 +60,9 @@ fit <- data_normalised %>%
              response = normalised_intensity_log2,
              dose = r_condition,
              filter = "post", 
-             retain_columns = c(pg_protein_accessions)) # make sure to retain columns that you need later but that are not part of the function
+             retain_columns = c(pg_protein_accessions)) 
+
+# make sure to retain columns that you need later but that are not part of the function
 
 ## ----parallel_model_fit, eval = FALSE-----------------------------------------
 #  # setup of cores. Make sure you have the future package installed
@@ -80,7 +83,13 @@ fit <- data_normalised %>%
 ## ----result_analysis, eval = test_protti, echo=FALSE, results='asis'----------
 fit %>% 
   filter(rank <= 20) %>% 
-  select(rank, score, eg_precursor_id, pg_protein_accessions, anova_adj_pval, correlation, ec_50) %>% 
+  select(rank, 
+         score, 
+         eg_precursor_id, 
+         pg_protein_accessions, 
+         anova_adj_pval, 
+         correlation, 
+         ec_50) %>% 
   mutate(anova_adj_pval = format(anova_adj_pval, digits = 3),
          correlation = format(correlation, digits = 3),
          ec_50 = format(ec_50, digits = 2),
@@ -89,7 +98,7 @@ fit %>%
 
 ## ----model_plot, eval = test_protti, fig.align = "center", fig.width = 7, fig.height = 5, message = FALSE, warning = FALSE----
 # Model plotting
-plot_drc_4p(fit,
+drc_4p_plot(fit,
             grouping = eg_precursor_id,
             dose = r_condition,
             response = normalised_intensity_log2,
@@ -104,36 +113,42 @@ uniprot <- fetch_uniprot(unis)
 
 # annotation of fit data based on information from UniProt
 fit_annotated <- fit %>% 
-  left_join(uniprot, by = c("pg_protein_accessions" = "id")) %>% # columns containing proteins IDs are named differently
-  mutate(binds_treatment = pg_protein_accessions == "P62942") # create new column with prior knowledge about binding partners of treatment
+  # columns containing proteins IDs are named differently
+  left_join(uniprot, by = c("pg_protein_accessions" = "id")) %>% 
+  # mark peptides that pass the filtering
+  mutate(passed_filter = !is.na(rank)) %>% 
+  # create new column with prior knowledge about binding partners of treatment
+  mutate(binds_treatment = pg_protein_accessions == "P62942") 
 
 ## ----post_analysis, eval = FALSE----------------------------------------------
 #  ### GO enrichment using "molecular function" annotation from UniProt
 #  
-#  go_enrichment(fit_annotated,
+#  calculate_go_enrichment(fit_annotated,
 #                protein_id = pg_protein_accessions,
 #                is_significant = passed_filter,
 #                go_annotations_uniprot = go_molecular_function) # column obtained from UniProt
 #  
 #  ### KEGG pathway enrichment
 #  
-#  # First you need to load KEGG pathway annotations from the KEGG database for your specific organism of interest.
-#  # In this case HeLa cells were used, therefore the organism of interest is homo sapiens (hsa)
+#  # First you need to load KEGG pathway annotations from the KEGG database
+#  # for your specific organism of interest. In this case HeLa cells were
+#  # used, therefore the organism of interest is homo sapiens (hsa)
 #  
 #  kegg <- fetch_kegg(species = "hsa")
 #  
 #  # Next we need to annotate our data with KEGG pathway IDs and perform enrichment analysis
 #  
 #  fit %>%
-#    left_join(kegg, by = c("pg_protein_accessions" = "uniprot_id")) %>% # columns containing proteins IDs are named differently
-#    kegg_enrichment(protein_id = pg_protein_accessions,
+#    # columns containing proteins IDs are named differently
+#    left_join(kegg, by = c("pg_protein_accessions" = "uniprot_id")) %>%
+#    calculate_kegg_enrichment(protein_id = pg_protein_accessions,
 #                    is_significant = passed_filter,
 #                    pathway_id = pathway_id, # column name from kegg data frame
 #                    pathway_name = pathway_name) # column name from kegg data frame
 #  
 #  ### Treatment enrichment analysis
 #  
-#  treatment_enrichment(fit_annotated,
+#  calculate_treatment_enrichment(fit_annotated,
 #                       protein_id = pg_protein_accessions,
 #                       is_significant = passed_filter,
 #                       binds_treatment = binds_treatment,
@@ -143,9 +158,10 @@ fit_annotated <- fit %>%
 #  
 #  fit_annotated %>%
 #    filter(passed_filter == TRUE) %>% # only analyse hits that were significant
-#    network_analysis(protein_id = pg_protein_accessions,
+#    analyse_functional_network(protein_id = pg_protein_accessions,
 #                     string_id = database_string, # column from UniProt containing STRING IDs
-#                     organism_id = 9606, # tax ID can be found in function documentation or STRING website
+#                     organism_id = 9606,
+#                     # tax ID can be found in function documentation or STRING database
 #                     binds_treatment = binds_treatment,
 #                     plot = TRUE)
 
