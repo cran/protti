@@ -12,7 +12,7 @@
 
 <meta name="author" content="Dina Schuster" />
 
-<meta name="date" content="2021-09-14" />
+<meta name="date" content="2022-01-11" />
 
 <title>Input Preparation Workflow</title>
 
@@ -140,7 +140,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <h1 class="title toc-ignore">Input Preparation Workflow</h1>
 <h4 class="author">Dina Schuster</h4>
-<h4 class="date">2021-09-14</h4>
+<h4 class="date">2022-01-11</h4>
 
 
 
@@ -150,7 +150,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </style>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>This vignette will give you an overview of how you can prepare the quantitative protein/peptide matrix output from common search engines and software such as <a href="https://biognosys.com/software/spectronaut/">Spectronaut</a>, MaxQuant, <a href="https://www.thermofisher.com/de/de/home/industrial/mass-spectrometry/liquid-chromatography-mass-spectrometry-lc-ms/lc-ms-software/multi-omics-data-analysis/proteome-discoverer-software.html">Proteome Discoverer</a> and <a href="https://skyline.ms/project/home/software/Skyline/begin.view">Skyline</a> for the analysis with <strong>protti</strong>. Due to its modular and flexible structure <strong>protti</strong> can be used on the output of common bottom-up proteomics search engines irrespective of the measurement mode (DDA, DIA, targeted-MS).</p>
+<p>This vignette will give you an overview of how you can prepare the quantitative protein/peptide matrix output from common search engines and software such as <a href="https://biognosys.com/software/spectronaut/">Spectronaut</a>, MaxQuant, <a href="https://www.thermofisher.com/order/catalog/product/OPTON-30945">Proteome Discoverer</a> and <a href="https://skyline.ms/project/home/software/Skyline/begin.view">Skyline</a> for the analysis with <strong>protti</strong>. Due to its modular and flexible structure <strong>protti</strong> can be used on the output of common bottom-up proteomics search engines irrespective of the measurement mode (DDA, DIA, targeted-MS).</p>
 <p>Furthermore, you are not only restricted to reports from the above mentioned search engines. As long as your data has a tabular format (data frame) and a specific minimal number of data columns you can analyse it with <strong>protti</strong>. The columns minimally required contain information on sample, condition, intensity, protein ID and the level the intensity is based on (fragment, precursor, peptide) if different from protein intensity. Depending on the analysis many more columns can be useful, but they are not required. Ultimately, your data should have a structure similar to this:</p>
 <table>
 <thead>
