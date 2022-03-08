@@ -3,6 +3,7 @@
 #' `r lifecycle::badge('deprecated')`
 #' This function was deprecated due to its name changing to `peptide_profile_plot()`.
 #'
+#' @return A list of peptide profile plots.
 #' @keywords internal
 #' @export
 plot_peptide_profiles <- function(...) {
@@ -56,6 +57,7 @@ plot_peptide_profiles <- function(...) {
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' # Create example data
 #' data <- data.frame(
 #'   sample = c(
@@ -93,7 +95,7 @@ plot_peptide_profiles <- function(...) {
 #'   precursor = precursor,
 #'   peptide = peptide,
 #'   intensity_log2 = intensity,
-#'   method = "iq",
+#'   method = "sum",
 #'   for_plot = TRUE
 #' )
 #'
@@ -109,6 +111,7 @@ plot_peptide_profiles <- function(...) {
 #'   targets = c("P1"),
 #'   protein_abundance_plot = TRUE
 #' )
+#' }
 peptide_profile_plot <- function(data,
                                  sample,
                                  peptide,

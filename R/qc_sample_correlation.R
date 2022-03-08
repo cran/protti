@@ -32,6 +32,7 @@
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' set.seed(123) # Makes example reproducible
 #'
 #' # Create example data
@@ -51,6 +52,7 @@
 #'   intensity_log2 = peptide_intensity_missing,
 #'   condition = condition
 #' )
+#' }
 qc_sample_correlation <- function(data,
                                   sample,
                                   grouping,
@@ -97,9 +99,11 @@ qc_sample_correlation <- function(data,
     names(digest_colours) <- digest
   }
   if (!missing(run_order)) {
-    colfunc <- grDevices::colorRampPalette(c("#0D0887", "#2E0595", "#46039F", "#5C01A6", "#7201A8", "#8707A6", "#9A169F", 
-                                  "#AC2694", "#BC3587", "#CA457A", "#D6556D", "#E26561", "#EB7655", "#F48849", 
-                                  "#FA9B3D", "#FDAF31", "#FDC527", "#F9DC24", "#F0F921"))
+    colfunc <- grDevices::colorRampPalette(c(
+      "#0D0887", "#2E0595", "#46039F", "#5C01A6", "#7201A8", "#8707A6", "#9A169F",
+      "#AC2694", "#BC3587", "#CA457A", "#D6556D", "#E26561", "#EB7655", "#F48849",
+      "#FA9B3D", "#FDAF31", "#FDC527", "#F9DC24", "#F0F921"
+    ))
     run_ord <- unique(dplyr::pull(annotation, {{ run_order }}))
     n_run_ord <- length(run_ord)
     run_ord_colours <- colfunc(n_run_ord)
@@ -126,7 +130,8 @@ qc_sample_correlation <- function(data,
 
   if (interactive == TRUE) {
     if (!requireNamespace("heatmaply", quietly = TRUE)) {
-      stop("Package \"heatmaply\" is needed for this function to work. Please install it.", call. = FALSE)
+      message("Package \"heatmaply\" is needed for this function to work. Please install it.", call. = FALSE)
+      return(invisible(NULL))
     }
     heatmap_interactive <-
       heatmaply::heatmaply(
@@ -153,17 +158,19 @@ qc_sample_correlation <- function(data,
     if (any(dependency_test)) {
       dependency_name <- names(dependency_test[dependency_test == TRUE])
       if (length(dependency_name) == 1) {
-        stop("Package \"",
+        message("Package \"",
           paste(dependency_name),
           "\" is needed for this function to work. Please install it.",
           call. = FALSE
         )
+        return(invisible(NULL))
       } else {
-        stop("Packages \"",
+        message("Packages \"",
           paste(dependency_name, collapse = "\" and \""),
           "\" are needed for this function to work. Please install them.",
           call. = FALSE
         )
+        return(invisible(NULL))
       }
     }
 

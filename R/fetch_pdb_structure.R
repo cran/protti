@@ -78,10 +78,6 @@
 #' head(pdb_structure, n = 10)
 #' }
 fetch_pdb_structure <- function(pdb_ids, return_data_frame = FALSE, show_progress = TRUE) {
-  if (!requireNamespace("httr", quietly = TRUE)) {
-    stop("Package \"httr\" is needed for this function to work. Please install it.", call. = FALSE)
-  }
-
   if (!curl::has_internet()) {
     message("No internet connection.")
     return(invisible(NULL))
@@ -108,18 +104,18 @@ fetch_pdb_structure <- function(pdb_ids, return_data_frame = FALSE, show_progres
     .y = names(batches),
     .f = ~ {
       # query information from database
-        query <- try_query(.x,
-          type = "text/tab-separated-values",
-          col_names = FALSE,
-          quote = "",
-          show_col_types = FALSE,
-          progress = FALSE
-        )
+      query <- try_query(.x,
+        type = "text/tab-separated-values",
+        col_names = FALSE,
+        quote = "",
+        show_col_types = FALSE,
+        progress = FALSE
+      )
 
       if (show_progress == TRUE) {
         pb$tick()
       }
-        
+
       # only proceed with data if it was correctly retrieved
       if ("tbl" %in% class(query)) {
         query %>%
@@ -181,25 +177,27 @@ fetch_pdb_structure <- function(pdb_ids, return_data_frame = FALSE, show_progres
       }
     }
   )
-  
+
   # catch any IDs that have not been fetched correctly
-  error_list <- query_result %>% 
+  error_list <- query_result %>%
     purrr::keep(.p = ~ is.character(.x))
-  
-  error_table <- tibble::tibble(id = names(error_list),
-                                error = unlist(error_list)) %>% 
+
+  error_table <- tibble::tibble(
+    id = names(error_list),
+    error = unlist(error_list)
+  ) %>%
     dplyr::distinct()
-  
-  if(nrow(error_table) != 0){
+
+  if (nrow(error_table) != 0) {
     message("The following IDs have not be retrieved correctly.")
     message(paste0(utils::capture.output(error_table), collapse = "\n"))
   }
-  
+
   # only keep data in output
-  
-  query_result <- query_result %>% 
+
+  query_result <- query_result %>%
     purrr::keep(.p = ~ !is.character(.x))
-  
+
   if (return_data_frame == FALSE) {
     return(query_result)
   } else {
