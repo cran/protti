@@ -81,6 +81,16 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_equal(ncol(af_prediction), 15)
   })
 
+  if (.Platform$OS.type != "windows") {
+    test_that("fetch_alphafold_prediction organism fetching works", {
+      af_prediction_organism <- fetch_alphafold_prediction(organism_name = "Helicobacter pylori", return_data_frame = FALSE)
+      expect_is(af_prediction_organism, "list")
+      expect_equal(length(af_prediction_organism), 1538)
+      expect_equal(ncol(af_prediction_organism[["O24860"]]), 15)
+      expect_equal(nrow(af_prediction_organism[["O24860"]]), 746)
+    })
+  }
+
   test_that("fetch_metal_pdb works", {
     metal_pdb <- fetch_metal_pdb(id_type = "pdb", id_value = c("1g54"), metal = "Zn")
     expect_is(metal_pdb, "data.frame")
@@ -89,12 +99,12 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
   })
 
   test_that("extract_metal_binders works", {
-    data_uniprot <- fetch_uniprot(c("Q03640", "Q03778", "P22276"))
+    data_uniprot <- fetch_uniprot(c("Q03640", "Q03778", "P22276", "P25889"))
     metal_info <- extract_metal_binders(data = data_uniprot, chebi_data = database, chebi_relation_data = relations)
 
     expect_is(metal_info, "data.frame")
     expect_equal(ncol(metal_info), 9)
-    expect_gt(nrow(metal_info), 40)
+    expect_gt(nrow(metal_info), 110)
   })
 
   test_that("deprecated kegg_enrichment works", {
@@ -427,5 +437,24 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       binds_treatment = is_known,
       plot = TRUE
     ), NA)
+  })
+
+  test_that("fetch_eco works", {
+    eco <- fetch_eco()
+    expect_is(eco, "data.frame")
+    expect_gt(nrow(eco), 2300)
+    expect_equal(ncol(eco), 10)
+
+    eco_relation <- fetch_eco(return_relation = TRUE)
+    expect_is(eco_relation, "data.frame")
+    expect_gt(nrow(eco_relation), 3200)
+    expect_equal(ncol(eco_relation), 3)
+
+    eco_history <- fetch_eco(return_history = TRUE)
+    expect_is(eco_history, "data.frame")
+    expect_gt(nrow(eco_history), 15500)
+    expect_equal(ncol(eco_history), 5)
+
+    expect_error(fetch_eco(return_relation = TRUE, return_history = TRUE))
   })
 }
