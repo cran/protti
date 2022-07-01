@@ -1,9 +1,16 @@
-# protti 0.2.2.9000
+# protti 0.3.1
+
+## Bug fixes
+* Corrected the "Protein Structure Analysis Workflow" vignette. The example for `map_peptides_on_structure()` was still using "residue" as its input. We now use `find_peptide_in_structure()` to generate the correct input column.
+* Fixed a bug in `fetch_uniprot()` and `fetch_uniprot_proteome()`. As UniProt has updated their website and their programmatic access, we now download the information from the legacy version temporarily. A real fix will follow.
+* Fixed a bug in `fetch_kegg()`. The function did not retrieve any data after the API URL had changed.
+
+# protti 0.3.0
 
 ## New features
 
 * The "Protein Structure Analysis Workflow" vignette was added. It contains an example workflow for the analysis of structural proteomics data.
-* `fetch_eco` was added. It fetches evidence & conclusion ontology information from the EBI database.
+* `fetch_eco()` was added. It fetches evidence & conclusion ontology information from the EBI database.
 * `qc_proteome_coverage()` now has the `reviewed` argument that specifies if only reviewed entries in UniProt should be considered as the proteome. The default is `TRUE` and stays the same as previously.
 * `volcano_plot()` now has the `facet_scales` argument that specifies if the scales should be "free" or "fixed" when a faceted plot is created. The arguments that can be provided are the same that can be provided to the `scales` argument of `ggplot2::facet_wrap()`. The new default is now `"fixed"`.
 * `pval_distribution_plot()` now has the optional `facet_by` variable that allows faceting of the plot.

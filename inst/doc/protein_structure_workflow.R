@@ -196,13 +196,23 @@ if (build_vignette_on_cran == FALSE){
 #    retain_columns = c(pdb_ids, auth_asym_id)
 #  )
 #  
+#  # Find amino acid positions in the structure
+#  ptsi_pgk_amino_acid_structure_positions <- find_peptide_in_structure(
+#     peptide_data = amino_acid_score,
+#     peptide = residue,
+#     start = residue,
+#     end = residue,
+#     uniprot_id = pg_protein_accessions,
+#     pdb_data = filtered_structures,
+#     retain_columns = c(amino_acid_score))
+#  
 #  # Map the score on structure
 #  map_peptides_on_structure(
-#    peptide_data = amino_acid_score,
+#    peptide_data = ptsi_pgk_amino_acid_structure_positions,
 #     uniprot_id = pg_protein_accessions,
 #     pdb_id = pdb_ids,
 #     chain = auth_asym_id,
-#     auth_seq_id = residue,
+#     auth_seq_id = auth_seq_id,
 #     map_value = amino_acid_score,
 #     file_format = ".pdb",
 #     export_location = tempdir()
