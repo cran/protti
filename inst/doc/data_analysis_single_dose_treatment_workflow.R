@@ -43,19 +43,19 @@ uniprot <-
   fetch_uniprot(
     uniprot_ids = uniprot_ids,
     columns = c(
-      "protein names",
-      "genes",
-      "go(molecular function)",
-      "database(String)",
-      "interactor",
-      "feature(ACTIVE SITE)",
-      "feature(BINDING SITE)",
-      "database(PDB)",
+      "protein_name",
+      "gene_names",
+      "go_f",
+      "xref_string",
+      "cc_interaction",
+      "ft_act_site",
+      "ft_binding",
+      "xref_pdb",
       "length",
       "sequence"
     )
   ) %>% 
-  rename(pg_protein_accessions = id)
+  rename(pg_protein_accessions = accession)
 
 data_filtered_uniprot <- data_filtered_proteotypic %>%
   left_join(y = uniprot,
@@ -86,8 +86,8 @@ diff_abundance_data <- data_filtered_uniprot %>%
     completeness_MAR = 0.7,
     completeness_MNAR = 0.25,
     retain_columns = c(pg_protein_accessions, 
-                       go_molecular_function, 
-                       database_string, 
+                       go_f, 
+                       xref_string, 
                        start, 
                        end, 
                        length, 
@@ -102,8 +102,8 @@ diff_abundance_data <- data_filtered_uniprot %>%
     comparison = comparison,
     method = "moderated_t-test",
     retain_columns = c(pg_protein_accessions, 
-                       go_molecular_function, 
-                       database_string, 
+                       go_f, 
+                       xref_string, 
                        start, 
                        end, 
                        length, 
@@ -194,7 +194,7 @@ peptide_profile_plot(
 #    data = diff_abundance_significant,
 #    protein_id = pg_protein_accessions,
 #    is_significant = is_significant,
-#    go_annotations_uniprot = go_molecular_function
+#    go_annotations_uniprot = go_f
 #  )
 #  
 #  ### Network analysis
@@ -204,7 +204,7 @@ peptide_profile_plot(
 #  
 #  analyse_functional_network(data = network_input,
 #                   protein_id = pg_protein_accessions,
-#                   string_id = database_string,
+#                   string_id = xref_string,
 #                   binds_treatment = binds_treatment,
 #                   organism_id = 9606)
 #  

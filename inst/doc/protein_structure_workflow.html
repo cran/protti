@@ -12,7 +12,7 @@
 
 <meta name="author" content="Jan-Philipp Quast, Patrick Stalder" />
 
-<meta name="date" content="2022-07-01" />
+<meta name="date" content="2022-09-02" />
 
 <title>Protein Structure Analysis Workflow</title>
 
@@ -334,7 +334,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Protein Structure Analysis Workflow</h1>
 <h4 class="author">Jan-Philipp Quast, Patrick Stalder</h4>
-<h4 class="date">2022-07-01</h4>
+<h4 class="date">2022-09-02</h4>
 
 
 
@@ -518,11 +518,11 @@ UniProt.</p>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Fetch UniProt information</span></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>uniprot_information <span class="ot">&lt;-</span> <span class="fu">fetch_uniprot</span>(<span class="at">uniprot_ids =</span> uniprot_ids,</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;sequence&quot;</span>, <span class="st">&quot;database(PDB)&quot;</span>))</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;sequence&quot;</span>, <span class="st">&quot;xref_pdb&quot;</span>))</span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Add UniProt information and find peptide positions</span></span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>ptsi_pgk_annotated <span class="ot">&lt;-</span> ptsi_pgk <span class="sc">%&gt;%</span> </span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(uniprot_information, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;pg_protein_accessions&quot;</span> <span class="ot">=</span> <span class="st">&quot;id&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(uniprot_information, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;pg_protein_accessions&quot;</span> <span class="ot">=</span> <span class="st">&quot;accession&quot;</span>)) <span class="sc">%&gt;%</span> </span>
 <span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">find_peptide</span>(<span class="at">protein_sequence =</span> sequence, <span class="at">peptide_sequence =</span> pep_stripped_sequence)</span></code></pre></div>
 </div>
 </div>
@@ -534,17 +534,17 @@ how they were acquired and if they fit your quality requirements.</p>
 <p>In the previous step we already retrieved information about the
 availability of protein structures for your protein of interest using
 the <code>fetch_uniprot()</code> function. The column
-<code>database_pdb</code> contains PDB identifiers if there is a
-structure available. Since the identifiers are pasted together into one
-string we need to separate them into individual identifiers to provide
-them to the <code>fetch_pdb()</code> function. This can be achieved
-through a combination of the <code>stringr</code> function
+<code>xref_pdb</code> contains PDB identifiers if there is a structure
+available. Since the identifiers are pasted together into one string we
+need to separate them into individual identifiers to provide them to the
+<code>fetch_pdb()</code> function. This can be achieved through a
+combination of the <code>stringr</code> function
 <code>str_split()</code> and the <code>tidyr</code> function
 <code>unnest()</code>.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract PDB IDs from UniProt information</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>ptsi_pgk_pdb_ids <span class="ot">&lt;-</span> ptsi_pgk_annotated <span class="sc">%&gt;%</span> </span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(pg_protein_accessions, database_pdb) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pdb_id =</span> <span class="fu">str_split</span>(database_pdb, <span class="at">pattern =</span> <span class="st">&quot;;&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(pg_protein_accessions, xref_pdb) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pdb_id =</span> <span class="fu">str_split</span>(xref_pdb, <span class="at">pattern =</span> <span class="st">&quot;;&quot;</span>)) <span class="sc">%&gt;%</span> </span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(pdb_id) <span class="sc">%&gt;%</span> </span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(pdb_id <span class="sc">!=</span> <span class="st">&quot;&quot;</span>)</span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>

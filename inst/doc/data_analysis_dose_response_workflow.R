@@ -114,7 +114,7 @@ uniprot <- fetch_uniprot(unis)
 # annotation of fit data based on information from UniProt
 fit_annotated <- fit %>% 
   # columns containing proteins IDs are named differently
-  left_join(uniprot, by = c("pg_protein_accessions" = "id")) %>% 
+  left_join(uniprot, by = c("pg_protein_accessions" = "accession")) %>% 
   # mark peptides that pass the filtering
   mutate(passed_filter = !is.na(rank)) %>% 
   # create new column with prior knowledge about binding partners of treatment
@@ -126,7 +126,7 @@ fit_annotated <- fit %>%
 #  calculate_go_enrichment(fit_annotated,
 #                protein_id = pg_protein_accessions,
 #                is_significant = passed_filter,
-#                go_annotations_uniprot = go_molecular_function) # column obtained from UniProt
+#                go_annotations_uniprot = go_f) # column obtained from UniProt
 #  
 #  ### KEGG pathway enrichment
 #  
@@ -159,7 +159,7 @@ fit_annotated <- fit %>%
 #  fit_annotated %>%
 #    filter(passed_filter == TRUE) %>% # only analyse hits that were significant
 #    analyse_functional_network(protein_id = pg_protein_accessions,
-#                     string_id = database_string, # column from UniProt containing STRING IDs
+#                     string_id = xref_string, # column from UniProt containing STRING IDs
 #                     organism_id = 9606,
 #                     # tax ID can be found in function documentation or STRING database
 #                     binds_treatment = binds_treatment,

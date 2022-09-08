@@ -37,18 +37,18 @@ if (build_vignette_on_cran == FALSE){
 #  
 #  # Fetch UniProt information
 #  uniprot_information <- fetch_uniprot(uniprot_ids = uniprot_ids,
-#                                       columns = c("sequence", "database(PDB)"))
+#                                       columns = c("sequence", "xref_pdb"))
 #  
 #  # Add UniProt information and find peptide positions
 #  ptsi_pgk_annotated <- ptsi_pgk %>%
-#    left_join(uniprot_information, by = c("pg_protein_accessions" = "id")) %>%
+#    left_join(uniprot_information, by = c("pg_protein_accessions" = "accession")) %>%
 #    find_peptide(protein_sequence = sequence, peptide_sequence = pep_stripped_sequence)
 
 ## ----extract_pdb_info, eval = test_protti, warning = FALSE--------------------
 #  # Extract PDB IDs from UniProt information
 #  ptsi_pgk_pdb_ids <- ptsi_pgk_annotated %>%
-#    distinct(pg_protein_accessions, database_pdb) %>%
-#    mutate(pdb_id = str_split(database_pdb, pattern = ";")) %>%
+#    distinct(pg_protein_accessions, xref_pdb) %>%
+#    mutate(pdb_id = str_split(xref_pdb, pattern = ";")) %>%
 #    unnest(pdb_id) %>%
 #    filter(pdb_id != "")
 #  
