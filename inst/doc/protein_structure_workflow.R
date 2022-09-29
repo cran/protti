@@ -79,6 +79,112 @@ if (build_vignette_on_cran == FALSE){
 #  # Example for fetching all predictions for Methanocaldococcus jannaschii
 #  # mj_predictions <- fetch_alphafold_prediction(organism_name = "Methanocaldococcus jannaschii")
 
+## ----alphafold_domain_prediction, eval = test_protti, warning = FALSE---------
+#  # Fetch aligned errors
+#  aligned_error <- fetch_alphafold_aligned_error(uniprot_ids = uniprot_ids,
+#                                                 error_cutoff = 4)
+#  
+#  # Predict protein domains with graph_resolution of 1
+#  af_domains_res_1 <- predict_alphafold_domain(pae_list = aligned_error,
+#                                         return_data_frame = TRUE,
+#                                         graph_resolution = 1) # Default
+#  
+#  # Predict protein domains with graph_resolution of 0.5
+#  af_domains_res_05 <- predict_alphafold_domain(pae_list = aligned_error,
+#                                         return_data_frame = TRUE,
+#                                         graph_resolution = 0.5)
+
+## ----show_model_P08839_res1, eval = test_protti, echo=FALSE, warning=FALSE----
+#  # This code won't be seen in the Vignette
+#  if(!is.null(af_domains_res_1)){
+#  # Fetch structure file for model
+#  protti:::try_query("https://alphafold.ebi.ac.uk/files/AF-P08839-F1-model_v3.pdb",
+#    type = "text/tab-separated-values",
+#    col_names = FALSE,
+#    quote = "",
+#    show_col_types = FALSE,
+#    progress = FALSE
+#  ) %>%
+#    readr::write_tsv(
+#      file = paste0(tempdir(), "/AF-P08839-F1-model_v3.pdb"),
+#      quote = "none",
+#      escape = "none",
+#      col_names = FALSE,
+#      progress = FALSE
+#    )
+#  
+#  # Load the r3dmol package
+#  library(r3dmol)
+#  
+#  # Extract domain positions
+#  
+#  domain1 <- af_domains_res_1 %>%
+#    filter(accession == "P08839" & domain == 1) %>%
+#    pull(residue)
+#  
+#  domain2 <- af_domains_res_1 %>%
+#    filter(accession == "P08839" & domain == 2) %>%
+#    pull(residue)
+#  
+#  domain3 <- af_domains_res_1 %>%
+#    filter(accession == "P08839" & domain == 3) %>%
+#    pull(residue)
+#  
+#  # Create model
+#  r3dmol() %>%
+#    m_add_model(data = paste0(tempdir(), "/AF-P08839-F1-model_v3.pdb"), format = "pdb") %>%
+#    m_set_style(style = m_style_cartoon()) %>%
+#    m_add_style(
+#      style = m_style_cartoon(color = "#8047d6"),
+#      sel = m_sel(resi = domain1)
+#    ) %>%
+#    m_add_style(
+#      style = m_style_cartoon(color = "#96d647"),
+#      sel = m_sel(resi = domain2)
+#    ) %>%
+#    m_add_style(
+#      style = m_style_cartoon(color = "#FF7276"),
+#      sel = m_sel(resi = domain3)
+#    ) %>%
+#    m_zoom_to()
+#  }
+
+## ----show_model_P08839_res05, eval = test_protti, echo=FALSE, warning=FALSE----
+#  # This code won't be seen in the Vignette
+#  if(!is.null(af_domains_res_1)){
+#  # Extract domain positions
+#  
+#  domain1 <- af_domains_res_05 %>%
+#    filter(accession == "P08839" & domain == 1) %>%
+#    pull(residue)
+#  
+#  domain2 <- af_domains_res_05 %>%
+#    filter(accession == "P08839" & domain == 2) %>%
+#    pull(residue)
+#  
+#  domain3 <- af_domains_res_05 %>%
+#    filter(accession == "P08839" & domain == 3) %>%
+#    pull(residue)
+#  
+#  # Create model
+#  r3dmol() %>%
+#    m_add_model(data = paste0(tempdir(), "/AF-P08839-F1-model_v3.pdb"), format = "pdb") %>%
+#    m_set_style(style = m_style_cartoon()) %>%
+#    m_add_style(
+#      style = m_style_cartoon(color = "#8047d6"),
+#      sel = m_sel(resi = domain1)
+#    ) %>%
+#    m_add_style(
+#      style = m_style_cartoon(color = "#96d647"),
+#      sel = m_sel(resi = domain2)
+#    ) %>%
+#    m_add_style(
+#      style = m_style_cartoon(color = "#FF7276"),
+#      sel = m_sel(resi = domain3)
+#    ) %>%
+#    m_zoom_to()
+#  }
+
 ## ----find_peptide, eval = test_protti, warning = FALSE------------------------
 #  ptsi_pgk_peptide_structure_positions <- find_peptide_in_structure(
 #     peptide_data = ptsi_pgk_annotated,
