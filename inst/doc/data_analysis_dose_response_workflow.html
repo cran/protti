@@ -12,7 +12,7 @@
 
 <meta name="author" content="Jan-Philipp Quast" />
 
-<meta name="date" content="2023-01-20" />
+<meta name="date" content="2024-02-15" />
 
 <title>Dose-Response Data Analysis Workflow</title>
 
@@ -340,7 +340,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Dose-Response Data Analysis Workflow</h1>
 <h4 class="author">Jan-Philipp Quast</h4>
-<h4 class="date">2023-01-20</h4>
+<h4 class="date">2024-02-15</h4>
 
 
 
@@ -350,6 +350,10 @@ text-align: justify}
 </style>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
+<pre><code>#&gt; [1] &quot;!!! IMPORTANT !!!&quot;
+#&gt; [1] &quot;This Vignette has not been built completely on CRAN due to size limitations.&quot;
+#&gt; [1] &quot;Please check the correct version here: &quot;
+#&gt; [1] &quot;https://jpquast.github.io/protti/articles/https://jpquast.github.io/protti/articles/data_analysis_dose_response_workflow.html&quot;</code></pre>
 <p>This vignette will take you through all important steps for the
 analysis of dose-response experiments with <strong>protti</strong>. For
 experiments with treatment titrations (i.e. samples treated with
@@ -405,11 +409,11 @@ As described on the <a href="https://jpquast.github.io/protti/index.html">main p
 well together with the rest of the package, by design. You can load
 packages after you installed them with the <code>library()</code>
 function.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load packages</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(protti)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(magrittr)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Load packages</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">library</span>(protti)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="fu">library</span>(magrittr)</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code></pre></div>
 <div id="loading-data" class="section level2">
 <h2>Loading data</h2>
 <p>For this vignette we use a subset of proteins from an experiment of
@@ -430,12 +434,12 @@ will make it easier to remember them and to use them in your data
 analysis. To ensure that your data input has the right format you can
 check out our <a href="https://jpquast.github.io/protti/articles/input_preparation_workflow.html">input
 preparation vignette</a>.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load data</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>rapamycin_dose_response <span class="ot">&lt;-</span> <span class="fu">read_protti</span>(<span class="st">&quot;your_data.csv&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Load data</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>rapamycin_dose_response <span class="ot">&lt;-</span> <span class="fu">read_protti</span>(<span class="st">&quot;your_data.csv&quot;</span>)</span></code></pre></div>
 <p>In this example the rapamycin dose-response data set is included in
 protti and you can easily use it by calling the <code>data()</code>
 function. This will load the data into your R session.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>utils<span class="sc">::</span><span class="fu">data</span>(<span class="st">&quot;rapamycin_dose_response&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>utils<span class="sc">::</span><span class="fu">data</span>(<span class="st">&quot;rapamycin_dose_response&quot;</span>)</span></code></pre></div>
 </div>
 <div id="cleaning-data" class="section level2">
 <h2>Cleaning data</h2>
@@ -472,14 +476,16 @@ analysis. This is specific for the analysis of LiP-MS data. If a peptide
 is non-proteotypic it is part of two or more proteins. If we detect a
 change in non-proteotypic peptides it is not possible to clearly assign
 which of the proteins it is coming from.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter, log2 transform and normalise data</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>data_normalised <span class="ot">&lt;-</span> rapamycin_dose_response <span class="sc">%&gt;%</span> </span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(eg_is_decoy <span class="sc">==</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">intensity_log2 =</span> <span class="fu">log2</span>(fg_quantity)) <span class="sc">%&gt;%</span> </span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">normalise</span>(<span class="at">sample =</span> r_file_name,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">intensity_log2 =</span> intensity_log2,</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">method =</span> <span class="st">&quot;median&quot;</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(pep_is_proteotypic <span class="sc">==</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Filter, log2 transform and normalise data</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>data_normalised <span class="ot">&lt;-</span> rapamycin_dose_response <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="fu">filter</span>(eg_is_decoy <span class="sc">==</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">intensity_log2 =</span> <span class="fu">log2</span>(fg_quantity)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="fu">normalise</span>(</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>    <span class="at">sample =</span> r_file_name,</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>    <span class="at">intensity_log2 =</span> intensity_log2,</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">&quot;median&quot;</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>  <span class="fu">filter</span>(pep_is_proteotypic <span class="sc">==</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <p>It is also useful to check the intensity distribution of all
 precursors with the <strong>protti</strong> function
 <code>qc_intensity_distribution()</code>. Usually, the distribution of
@@ -493,12 +499,14 @@ the distribution. These values are likely false assignments of peaks. If
 you look closely you can see a small peak around 0 corresponding to
 these values. In the case of our distribution we could chose a cutoff at
 a log2 intensity of 5, which corresponds to a raw intensity of 32.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qc_intensity_distribution</span>(<span class="at">data =</span> data_normalised,</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                          <span class="at">grouping =</span> eg_precursor_id,</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                          <span class="at">intensity =</span> normalised_intensity_log2,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                          <span class="at">plot_style =</span> <span class="st">&quot;histogram&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>data_normalised <span class="ot">&lt;-</span> data_normalised <span class="sc">%&gt;%</span> </span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(normalised_intensity_log2 <span class="sc">&gt;</span> <span class="dv">5</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">qc_intensity_distribution</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="at">data =</span> data_normalised,</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="at">grouping =</span> eg_precursor_id,</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="at">intensity =</span> normalised_intensity_log2,</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="at">plot_style =</span> <span class="st">&quot;histogram&quot;</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>data_normalised <span class="ot">&lt;-</span> data_normalised <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="fu">filter</span>(normalised_intensity_log2 <span class="sc">&gt;</span> <span class="dv">5</span>)</span></code></pre></div>
 </div>
 <div id="clustering-of-samples" class="section level2">
 <h2>Clustering of samples</h2>
@@ -515,11 +523,13 @@ however you can change that to any correlation supported by the
 <p><em>Note: Many of <strong>protti</strong>’s plotting functions also
 have the option to display an interactive version of the plot with an
 <code>interactive</code> argument.</em></p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qc_sample_correlation</span>(<span class="at">data =</span> data_normalised,</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">sample =</span> r_file_name,</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">grouping =</span> eg_precursor_id,</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">intensity_log2 =</span> normalised_intensity_log2,</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">condition =</span> r_condition)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">qc_sample_correlation</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="at">data =</span> data_normalised,</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="at">sample =</span> r_file_name,</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="at">grouping =</span> eg_precursor_id,</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="at">intensity_log2 =</span> normalised_intensity_log2,</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>  <span class="at">condition =</span> r_condition</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>)</span></code></pre></div>
 <p>For our rapamycin data set we cannot identify any clear sample
 clustering based on correlation, because only a small subset of proteins
 was selected for this example. Furthermore, data sets in which only a
@@ -532,11 +542,13 @@ analysis can be performed using the <strong>protti</strong> function
 <code>qc_pca()</code>. Similar to before, good clustering is usually
 dependent on the amount of changing precursors (or
 peptides/proteins).</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qc_pca</span>(<span class="at">data =</span> data_normalised,</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">sample =</span> r_file_name,</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">grouping =</span> eg_precursor_id,</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">intensity =</span> normalised_intensity_log2,</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">condition =</span> r_condition)</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">qc_pca</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  <span class="at">data =</span> data_normalised,</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="at">sample =</span> r_file_name,</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="at">grouping =</span> eg_precursor_id,</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  <span class="at">intensity =</span> normalised_intensity_log2,</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>  <span class="at">condition =</span> r_condition</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 </div>
 <div id="fitting-dose-response-curves" class="section level1">
@@ -570,15 +582,17 @@ fit. If you want to perform enrichment analysis later on you should keep
 the default <code>filter = &quot;post&quot;</code>. This will fit all possible
 models and then only annotate models based on whether they passed or
 failed the filtering step (<code>passed_filter</code>).</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> data_normalised <span class="sc">%&gt;%</span> </span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit_drc_4p</span>(<span class="at">sample =</span> r_file_name, </span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">grouping =</span> eg_precursor_id,</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">response =</span> normalised_intensity_log2,</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">dose =</span> r_condition,</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">filter =</span> <span class="st">&quot;post&quot;</span>, </span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">retain_columns =</span> <span class="fu">c</span>(pg_protein_accessions)) </span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># make sure to retain columns that you need later but that are not part of the function</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>fit <span class="ot">&lt;-</span> data_normalised <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="fu">fit_drc_4p</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>    <span class="at">sample =</span> r_file_name,</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>    <span class="at">grouping =</span> eg_precursor_id,</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>    <span class="at">response =</span> normalised_intensity_log2,</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>    <span class="at">dose =</span> r_condition,</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>    <span class="at">filter =</span> <span class="st">&quot;post&quot;</span>,</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>    <span class="at">retain_columns =</span> <span class="fu">c</span>(pg_protein_accessions)</span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>  )</span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="co"># make sure to retain columns that you need later but that are not part of the function</span></span></code></pre></div>
 <p>If you have to fit many models this function may take about an hour
 or longer. If you have the computational resources you can speed this up
 by using <code>parallel_fit_drc_4p()</code>, a parallelised version of
@@ -590,20 +604,22 @@ it takes time to copy the data to and from each core - this process will
 not be performed in parallel. Therefore, it is advised that the run time
 on each core is at least as long as the time to set up (data transfer,
 environment preparation etc.) all cores.</em></p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># setup of cores. Make sure you have the future package installed</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>future<span class="sc">::</span><span class="fu">plan</span>(future<span class="sc">::</span>multisession, <span class="at">workers =</span> <span class="dv">3</span>)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># fit models in parallel</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>parallel_fit <span class="ot">&lt;-</span> data_normalised <span class="sc">%&gt;%</span> </span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">parallel_fit_drc_4p</span>(<span class="at">sample =</span> r_file_name,</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>                      <span class="at">grouping =</span> eg_precursor_id,</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>                      <span class="at">response =</span> normalised_intensity_log2,</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>                      <span class="at">dose =</span> r_condition,</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>                      <span class="at">retain_columns =</span> <span class="fu">c</span>(pg_protein_accessions),</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>                      <span class="at">n_cores =</span> <span class="dv">3</span>)</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co"># remove workers again after you are done</span></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>future<span class="sc">::</span><span class="fu">plan</span>(future<span class="sc">::</span>sequential)</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># setup of cores. Make sure you have the future package installed</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>future<span class="sc">::</span><span class="fu">plan</span>(future<span class="sc">::</span>multisession, <span class="at">workers =</span> <span class="dv">3</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co"># fit models in parallel</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>parallel_fit <span class="ot">&lt;-</span> data_normalised <span class="sc">%&gt;%</span></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>  <span class="fu">parallel_fit_drc_4p</span>(</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>    <span class="at">sample =</span> r_file_name,</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>    <span class="at">grouping =</span> eg_precursor_id,</span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>    <span class="at">response =</span> normalised_intensity_log2,</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>    <span class="at">dose =</span> r_condition,</span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>    <span class="at">retain_columns =</span> <span class="fu">c</span>(pg_protein_accessions),</span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>    <span class="at">n_cores =</span> <span class="dv">3</span></span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>  )</span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a></span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a><span class="co"># remove workers again after you are done</span></span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a>future<span class="sc">::</span><span class="fu">plan</span>(future<span class="sc">::</span>sequential)</span></code></pre></div>
 <p>If we examine all precursors based on their rank (calculated from
 correlation and ANOVA q-value), we can see that as expected most of them
 are FKBP12 (P62942) peptides. One benefit of analysing LiP-MS data on
@@ -628,14 +644,15 @@ with data frames containing the model and original data points required
 for the plot. These data frames contain the original names for
 <code>dose</code> and <code>response</code> that you provided to
 <code>fit_drc_4p()</code>.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Model plotting</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">drc_4p_plot</span>(fit,</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">grouping =</span> eg_precursor_id,</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">dose =</span> r_condition,</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">response =</span> normalised_intensity_log2,</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">targets =</span> <span class="st">&quot;_VFDVELLKLE_.2&quot;</span>,</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">unit =</span> <span class="st">&quot;pM&quot;</span>,</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">export =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># Model plotting</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="fu">drc_4p_plot</span>(fit,</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="at">grouping =</span> eg_precursor_id,</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="at">dose =</span> r_condition,</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>  <span class="at">response =</span> normalised_intensity_log2,</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>  <span class="at">targets =</span> <span class="st">&quot;_VFDVELLKLE_.2&quot;</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>  <span class="at">unit =</span> <span class="st">&quot;pM&quot;</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>  <span class="at">export =</span> <span class="cn">FALSE</span></span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 </div>
 <div id="further-analysis" class="section level1">
@@ -664,7 +681,7 @@ interaction networks. It is often very useful to check for interactions
 within your significant hits. For LiP-MS data this sometimes explains
 why proteins that do not directly interact with your treatment are still
 significantly affected. With <code>analyse_functional_network()</code>,
-<strong>protti</strong> provides a useful wrapper around some <a href="http://www.bioconductor.org/packages/release/bioc/html/STRINGdb.html"><code>STRINGdb</code></a>
+<strong>protti</strong> provides a useful wrapper around some <a href="https://www.bioconductor.org/packages/release/bioc/html/STRINGdb.html"><code>STRINGdb</code></a>
 package functions.</p>
 <div id="annotation-of-data" class="section level2">
 <h2>Annotation of data</h2>
@@ -683,18 +700,18 @@ download.</p>
 data that contains TRUE or FALSE information based on if a precursor
 passed the filtering criterion defined in the <code>fit_drc_4p()</code>
 function. This is the case if the peptide was assigned a rank.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fetching of UniProt information</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>unis <span class="ot">&lt;-</span> <span class="fu">unique</span>(fit<span class="sc">$</span>pg_protein_accessions)</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>uniprot <span class="ot">&lt;-</span> <span class="fu">fetch_uniprot</span>(unis)</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># annotation of fit data based on information from UniProt</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>fit_annotated <span class="ot">&lt;-</span> fit <span class="sc">%&gt;%</span> </span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># columns containing proteins IDs are named differently</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(uniprot, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;pg_protein_accessions&quot;</span> <span class="ot">=</span> <span class="st">&quot;accession&quot;</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># mark peptides that pass the filtering</span></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">passed_filter =</span> <span class="sc">!</span><span class="fu">is.na</span>(rank)) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create new column with prior knowledge about binding partners of treatment</span></span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">binds_treatment =</span> pg_protein_accessions <span class="sc">==</span> <span class="st">&quot;P62942&quot;</span>) </span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="co"># fetching of UniProt information</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>unis <span class="ot">&lt;-</span> <span class="fu">unique</span>(fit<span class="sc">$</span>pg_protein_accessions)</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>uniprot <span class="ot">&lt;-</span> <span class="fu">fetch_uniprot</span>(unis)</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="co"># annotation of fit data based on information from UniProt</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>fit_annotated <span class="ot">&lt;-</span> fit <span class="sc">%&gt;%</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>  <span class="co"># columns containing proteins IDs are named differently</span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a>  <span class="fu">left_join</span>(uniprot, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;pg_protein_accessions&quot;</span> <span class="ot">=</span> <span class="st">&quot;accession&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>  <span class="co"># mark peptides that pass the filtering</span></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">passed_filter =</span> <span class="sc">!</span><span class="fu">is.na</span>(rank)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a>  <span class="co"># create new column with prior knowledge about binding partners of treatment</span></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">binds_treatment =</span> pg_protein_accessions <span class="sc">==</span> <span class="st">&quot;P62942&quot;</span>)</span></code></pre></div>
 </div>
 <div id="enrichment-and-network-analysis" class="section level2">
 <h2>Enrichment and network analysis</h2>
@@ -703,49 +720,55 @@ analysis are not useful, since we only use a very small random subset of
 the complete data set and rapamycin only interacts with FKBP12.</p>
 <p>Nevertheless, we will demonstrate below how you could use some
 additional functions on your own data.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="do">### GO enrichment using &quot;molecular function&quot; annotation from UniProt</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">calculate_go_enrichment</span>(fit_annotated,</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">protein_id =</span> pg_protein_accessions,</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">is_significant =</span> passed_filter,</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">go_annotations_uniprot =</span> go_f) <span class="co"># column obtained from UniProt</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="do">### KEGG pathway enrichment</span></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co"># First you need to load KEGG pathway annotations from the KEGG database </span></span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co"># for your specific organism of interest. In this case HeLa cells were </span></span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co"># used, therefore the organism of interest is homo sapiens (hsa)</span></span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>kegg <span class="ot">&lt;-</span> <span class="fu">fetch_kegg</span>(<span class="at">species =</span> <span class="st">&quot;hsa&quot;</span>)</span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Next we need to annotate our data with KEGG pathway IDs and perform enrichment analysis</span></span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>fit <span class="sc">%&gt;%</span> </span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># columns containing proteins IDs are named differently</span></span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(kegg, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;pg_protein_accessions&quot;</span> <span class="ot">=</span> <span class="st">&quot;uniprot_id&quot;</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">calculate_kegg_enrichment</span>(<span class="at">protein_id =</span> pg_protein_accessions,</span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>                  <span class="at">is_significant =</span> passed_filter,</span>
-<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>                  <span class="at">pathway_id =</span> pathway_id, <span class="co"># column name from kegg data frame</span></span>
-<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>                  <span class="at">pathway_name =</span> pathway_name) <span class="co"># column name from kegg data frame</span></span>
-<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a><span class="do">### Treatment enrichment analysis</span></span>
-<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a><span class="fu">calculate_treatment_enrichment</span>(fit_annotated,</span>
-<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>                     <span class="at">protein_id =</span> pg_protein_accessions,</span>
-<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>                     <span class="at">is_significant =</span> passed_filter,</span>
-<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>                     <span class="at">binds_treatment =</span> binds_treatment,</span>
-<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>                     <span class="at">treatment_name =</span> <span class="st">&quot;Rapamycin&quot;</span>)</span>
-<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a><span class="do">### Network analysis</span></span>
-<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>fit_annotated <span class="sc">%&gt;%</span> </span>
-<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(passed_filter <span class="sc">==</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> <span class="co"># only analyse hits that were significant</span></span>
-<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">analyse_functional_network</span>(<span class="at">protein_id =</span> pg_protein_accessions,</span>
-<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>                   <span class="at">string_id =</span> xref_string, <span class="co"># column from UniProt containing STRING IDs</span></span>
-<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>                   <span class="at">organism_id =</span> <span class="dv">9606</span>, </span>
-<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a>                   <span class="co"># tax ID can be found in function documentation or STRING database</span></span>
-<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a>                   <span class="at">binds_treatment =</span> binds_treatment,</span>
-<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>                   <span class="at">plot =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="do">### GO enrichment using &quot;molecular function&quot; annotation from UniProt</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="fu">calculate_go_enrichment</span>(fit_annotated,</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>  <span class="at">protein_id =</span> pg_protein_accessions,</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>  <span class="at">is_significant =</span> passed_filter,</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>  <span class="at">go_annotations_uniprot =</span> go_f</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>) <span class="co"># column obtained from UniProt</span></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a><span class="do">### KEGG pathway enrichment</span></span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a><span class="co"># First you need to load KEGG pathway annotations from the KEGG database</span></span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a><span class="co"># for your specific organism of interest. In this case HeLa cells were</span></span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a><span class="co"># used, therefore the organism of interest is homo sapiens (hsa)</span></span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a></span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a>kegg <span class="ot">&lt;-</span> <span class="fu">fetch_kegg</span>(<span class="at">species =</span> <span class="st">&quot;hsa&quot;</span>)</span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a></span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="co"># Next we need to annotate our data with KEGG pathway IDs and perform enrichment analysis</span></span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a></span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a>fit <span class="sc">%&gt;%</span></span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a>  <span class="co"># columns containing proteins IDs are named differently</span></span>
+<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a>  <span class="fu">left_join</span>(kegg, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;pg_protein_accessions&quot;</span> <span class="ot">=</span> <span class="st">&quot;uniprot_id&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a>  <span class="fu">calculate_kegg_enrichment</span>(</span>
+<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a>    <span class="at">protein_id =</span> pg_protein_accessions,</span>
+<span id="cb14-24"><a href="#cb14-24" tabindex="-1"></a>    <span class="at">is_significant =</span> passed_filter,</span>
+<span id="cb14-25"><a href="#cb14-25" tabindex="-1"></a>    <span class="at">pathway_id =</span> pathway_id, <span class="co"># column name from kegg data frame</span></span>
+<span id="cb14-26"><a href="#cb14-26" tabindex="-1"></a>    <span class="at">pathway_name =</span> pathway_name</span>
+<span id="cb14-27"><a href="#cb14-27" tabindex="-1"></a>  ) <span class="co"># column name from kegg data frame</span></span>
+<span id="cb14-28"><a href="#cb14-28" tabindex="-1"></a></span>
+<span id="cb14-29"><a href="#cb14-29" tabindex="-1"></a><span class="do">### Treatment enrichment analysis</span></span>
+<span id="cb14-30"><a href="#cb14-30" tabindex="-1"></a></span>
+<span id="cb14-31"><a href="#cb14-31" tabindex="-1"></a><span class="fu">calculate_treatment_enrichment</span>(fit_annotated,</span>
+<span id="cb14-32"><a href="#cb14-32" tabindex="-1"></a>  <span class="at">protein_id =</span> pg_protein_accessions,</span>
+<span id="cb14-33"><a href="#cb14-33" tabindex="-1"></a>  <span class="at">is_significant =</span> passed_filter,</span>
+<span id="cb14-34"><a href="#cb14-34" tabindex="-1"></a>  <span class="at">binds_treatment =</span> binds_treatment,</span>
+<span id="cb14-35"><a href="#cb14-35" tabindex="-1"></a>  <span class="at">treatment_name =</span> <span class="st">&quot;Rapamycin&quot;</span></span>
+<span id="cb14-36"><a href="#cb14-36" tabindex="-1"></a>)</span>
+<span id="cb14-37"><a href="#cb14-37" tabindex="-1"></a></span>
+<span id="cb14-38"><a href="#cb14-38" tabindex="-1"></a><span class="do">### Network analysis</span></span>
+<span id="cb14-39"><a href="#cb14-39" tabindex="-1"></a></span>
+<span id="cb14-40"><a href="#cb14-40" tabindex="-1"></a>fit_annotated <span class="sc">%&gt;%</span></span>
+<span id="cb14-41"><a href="#cb14-41" tabindex="-1"></a>  <span class="fu">filter</span>(passed_filter <span class="sc">==</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> <span class="co"># only analyse hits that were significant</span></span>
+<span id="cb14-42"><a href="#cb14-42" tabindex="-1"></a>  <span class="fu">analyse_functional_network</span>(</span>
+<span id="cb14-43"><a href="#cb14-43" tabindex="-1"></a>    <span class="at">protein_id =</span> pg_protein_accessions,</span>
+<span id="cb14-44"><a href="#cb14-44" tabindex="-1"></a>    <span class="at">string_id =</span> xref_string, <span class="co"># column from UniProt containing STRING IDs</span></span>
+<span id="cb14-45"><a href="#cb14-45" tabindex="-1"></a>    <span class="at">organism_id =</span> <span class="dv">9606</span>,</span>
+<span id="cb14-46"><a href="#cb14-46" tabindex="-1"></a>    <span class="co"># tax ID can be found in function documentation or STRING database</span></span>
+<span id="cb14-47"><a href="#cb14-47" tabindex="-1"></a>    <span class="at">binds_treatment =</span> binds_treatment,</span>
+<span id="cb14-48"><a href="#cb14-48" tabindex="-1"></a>    <span class="at">plot =</span> <span class="cn">TRUE</span></span>
+<span id="cb14-49"><a href="#cb14-49" tabindex="-1"></a>  )</span></code></pre></div>
 </div>
 </div>
 

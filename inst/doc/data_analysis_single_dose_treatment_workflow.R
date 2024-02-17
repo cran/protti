@@ -1,4 +1,4 @@
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 test_protti <- identical(Sys.getenv("TEST_PROTTI"), "true")
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -21,16 +21,20 @@ knitr::opts_chunk$set(
 #  data_normalised <- rapamycin_10uM %>%
 #    filter(eg_is_decoy == FALSE) %>%
 #    mutate(intensity_log2 = log2(fg_quantity)) %>%
-#    normalise(sample = r_file_name,
-#              intensity_log2 = intensity_log2,
-#              method = "median")
+#    normalise(
+#      sample = r_file_name,
+#      intensity_log2 = intensity_log2,
+#      method = "median"
+#    )
 #  
 #  data_filtered <- data_normalised %>%
-#    filter_cv(grouping = eg_precursor_id,
-#              condition = r_condition,
-#              log2_intensity = intensity_log2,
-#              cv_limit = 0.25,
-#              min_conditions = 1)
+#    filter_cv(
+#      grouping = eg_precursor_id,
+#      condition = r_condition,
+#      log2_intensity = intensity_log2,
+#      cv_limit = 0.25,
+#      min_conditions = 1
+#    )
 
 ## ----data_preparation_prot_pep, eval = test_protti, message = FALSE, warning = FALSE----
 #  data_filtered_proteotypic <- data_filtered %>%
@@ -58,15 +62,23 @@ knitr::opts_chunk$set(
 #    rename(pg_protein_accessions = accession)
 #  
 #  data_filtered_uniprot <- data_filtered_proteotypic %>%
-#    left_join(y = uniprot,
-#              by = "pg_protein_accessions") %>%
-#    find_peptide(protein_sequence = sequence,
-#                 peptide_sequence = pep_stripped_sequence) %>%
-#    assign_peptide_type(aa_before = aa_before,
-#                 last_aa = last_aa,
-#                 aa_after = aa_after) %>%
-#    calculate_sequence_coverage(protein_sequence = sequence,
-#                      peptides = pep_stripped_sequence)
+#    left_join(
+#      y = uniprot,
+#      by = "pg_protein_accessions"
+#    ) %>%
+#    find_peptide(
+#      protein_sequence = sequence,
+#      peptide_sequence = pep_stripped_sequence
+#    ) %>%
+#    assign_peptide_type(
+#      aa_before = aa_before,
+#      last_aa = last_aa,
+#      aa_after = aa_after
+#    ) %>%
+#    calculate_sequence_coverage(
+#      protein_sequence = sequence,
+#      peptides = pep_stripped_sequence
+#    )
 
 ## ----coverage_plot, eval = test_protti, fig.align= "center", fig.width = 6, fig.height = 5----
 #  qc_sequence_coverage(
@@ -85,13 +97,15 @@ knitr::opts_chunk$set(
 #      ref_condition = "control",
 #      completeness_MAR = 0.7,
 #      completeness_MNAR = 0.25,
-#      retain_columns = c(pg_protein_accessions,
-#                         go_f,
-#                         xref_string,
-#                         start,
-#                         end,
-#                         length,
-#                         coverage)
+#      retain_columns = c(
+#        pg_protein_accessions,
+#        go_f,
+#        xref_string,
+#        start,
+#        end,
+#        length,
+#        coverage
+#      )
 #    ) %>%
 #    calculate_diff_abundance(
 #      sample = r_file_name,
@@ -101,20 +115,23 @@ knitr::opts_chunk$set(
 #      missingness = missingness,
 #      comparison = comparison,
 #      method = "moderated_t-test",
-#      retain_columns = c(pg_protein_accessions,
-#                         go_f,
-#                         xref_string,
-#                         start,
-#                         end,
-#                         length,
-#                         coverage)
+#      retain_columns = c(
+#        pg_protein_accessions,
+#        go_f,
+#        xref_string,
+#        start,
+#        end,
+#        length,
+#        coverage
+#      )
 #    )
 
 ## ----pval_distribution, eval = test_protti, message = FALSE, warning = FALSE, fig.align= "center", fig.width = 6, fig.height = 5----
-#  pval_distribution_plot(data = diff_abundance_data,
-#                         grouping = eg_precursor_id,
-#                         pval = pval
-#                         )
+#  pval_distribution_plot(
+#    data = diff_abundance_data,
+#    grouping = eg_precursor_id,
+#    pval = pval
+#  )
 
 ## ----volcano_plot, eval = test_protti, fig.align= "center", fig.width = 6, fig.height = 5, message = FALSE, warning = FALSE----
 #  volcano_plot(
@@ -146,10 +163,9 @@ knitr::opts_chunk$set(
 #    colouring = diff,
 #    cutoffs = c(diff = 1, adj_pval = 0.05),
 #    protein_id = pg_protein_accessions
-#    )
+#  )
 
 ## ----woods_plot, eval = test_protti, fig.align = "center", fig.width = 6, message = FALSE, warning = FALSE----
-#  
 #  FKBP12 <- FKBP12 %>%
 #    mutate(significant = ifelse(adj_pval < 0.01, TRUE, FALSE))
 #  
@@ -165,7 +181,7 @@ knitr::opts_chunk$set(
 #    facet = FALSE,
 #    fold_change_cutoff = 1,
 #    highlight = significant
-#    )
+#  )
 
 ## ----protile_plot, eval = test_protti, fig.align = "center", fig.width = 20, fig.height = 6, message = FALSE, warning = FALSE----
 #  FKBP12_intensity <- data_filtered_uniprot %>%
@@ -202,11 +218,13 @@ knitr::opts_chunk$set(
 #  network_input <- diff_abundance_significant %>%
 #    filter(is_significant == TRUE)
 #  
-#  analyse_functional_network(data = network_input,
-#                   protein_id = pg_protein_accessions,
-#                   string_id = xref_string,
-#                   binds_treatment = binds_treatment,
-#                   organism_id = 9606)
+#  analyse_functional_network(
+#    data = network_input,
+#    protein_id = pg_protein_accessions,
+#    string_id = xref_string,
+#    binds_treatment = binds_treatment,
+#    organism_id = 9606
+#  )
 #  
 #  ### KEGG pathway enrichment
 #  
@@ -221,17 +239,19 @@ knitr::opts_chunk$set(
 #  diff_abundance_significant %>%
 #    # columns containing proteins IDs are named differently
 #    left_join(kegg, by = c("pg_protein_accessions" = "uniprot_id")) %>%
-#    calculate_kegg_enrichment(protein_id = pg_protein_accessions,
-#                    is_significant = is_significant,
-#                    pathway_id = pathway_id,
-#                    pathway_name = pathway_name)
+#    calculate_kegg_enrichment(
+#      protein_id = pg_protein_accessions,
+#      is_significant = is_significant,
+#      pathway_id = pathway_id,
+#      pathway_name = pathway_name
+#    )
 #  
 #  ### Treatment enrichment analysis
 #  
 #  calculate_treatment_enrichment(diff_abundance_significant,
-#                       protein_id = pg_protein_accessions,
-#                       is_significant = is_significant,
-#                       binds_treatment = binds_treatment,
-#                       treatment_name = "Rapamycin")
-#  
+#    protein_id = pg_protein_accessions,
+#    is_significant = is_significant,
+#    binds_treatment = binds_treatment,
+#    treatment_name = "Rapamycin"
+#  )
 

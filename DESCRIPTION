@@ -1,7 +1,7 @@
 Package: protti
 Title: Bottom-Up Proteomics and LiP-MS Quality Control and Data
         Analysis Tools
-Version: 0.6.0
+Version: 0.7.0
 Authors@R: 
     c(person(given = "Jan-Philipp",
            family = "Quast",
@@ -34,10 +34,10 @@ URL: https://github.com/jpquast/protti,
 BugReports: https://github.com/jpquast/protti/issues
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2023-01-20 10:13:48 UTC; jan-philippquast
+Packaged: 2024-02-15 09:12:28 UTC; jan-philippquast
 Author: Jan-Philipp Quast [aut, cre] (<https://orcid.org/0000-0003-2713-778X>),
   Dina Schuster [aut] (<https://orcid.org/0000-0001-6611-8237>),
   ETH Zurich [cph, fnd]
 Maintainer: Jan-Philipp Quast <quast@imsb.biol.ethz.ch>
 Repository: CRAN
-Date/Publication: 2023-01-20 10:30:02 UTC
+Date/Publication: 2024-02-17 12:20:02 UTC

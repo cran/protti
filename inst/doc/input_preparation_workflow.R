@@ -1,4 +1,4 @@
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -12,11 +12,11 @@ library(stringr)
 
 ## ----Spectronaut, eval=FALSE--------------------------------------------------
 #  # To read in your own data you can use read_protti()
-#  spectronaut_data  <- read_protti(filename = "mydata/spectronaut.csv")
+#  spectronaut_data <- read_protti(filename = "mydata/spectronaut.csv")
 
 ## ----MaxQuant_peptide, eval=FALSE---------------------------------------------
 #  # To read in your own data you can use read_protti()
-#  evidence  <- read_protti(filename = "yourpath/evidence.txt")
+#  evidence <- read_protti(filename = "yourpath/evidence.txt")
 #  
 #  evidence_proteotypic <- evidence %>%
 #    # adds new column with logicals that are TRUE if the peptide can be assigned
@@ -58,7 +58,7 @@ library(stringr)
 
 ## ----MaxQuant_protein, eval=FALSE---------------------------------------------
 #  # To read in your own data you can use read_protti()
-#  protein_groups  <- read_protti(filename = "yourpath/proteinGroups.txt") %>%
+#  protein_groups <- read_protti(filename = "yourpath/proteinGroups.txt") %>%
 #    # adds new column with logicals indicating if protein is a potential contaminant,
 #    # you can filter these out later on. You should also consider filtering out proteins
 #    # that were "only identified by site" and reverse hits, as well as proteins with only
@@ -138,7 +138,6 @@ library(stringr)
 #  # Combine your long data frame with the annotation
 #  skyline_annotated <- skyline_data_int %>%
 #    left_join(y = annotation, by = "replicate_name")
-#  
 
 ## ----Proteome_discoverer_pep, eval=FALSE--------------------------------------
 #  # Load data

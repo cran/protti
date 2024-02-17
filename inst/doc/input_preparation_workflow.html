@@ -12,7 +12,7 @@
 
 <meta name="author" content="Dina Schuster" />
 
-<meta name="date" content="2023-01-20" />
+<meta name="date" content="2024-02-15" />
 
 <title>Input Preparation Workflow</title>
 
@@ -340,7 +340,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Input Preparation Workflow</h1>
 <h4 class="author">Dina Schuster</h4>
-<h4 class="date">2023-01-20</h4>
+<h4 class="date">2024-02-15</h4>
 
 
 
@@ -474,10 +474,10 @@ from the R packages <a href="https://magrittr.tidyverse.org/index.html"><code>ma
 and <a href="https://stringr.tidyverse.org/"><code>stringr</code></a>.
 You can load packages after you installed them with the
 <code>library()</code> function.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(magrittr)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(magrittr)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">library</span>(stringr)</span></code></pre></div>
 <p>Note that we are using the R package <a href="https://magrittr.tidyverse.org/index.html"><code>magrittr</code></a>
 because of its pipe operator <code>%&gt;%</code>. It takes the output of
 the preceding function and supplies it as the first argument of the
@@ -520,8 +520,8 @@ fast, but also to clean up the column names into lower snake case. This
 will make it easier to remember them and to use them in your data
 analysis. For the Spectronaut columns <code>R.FileName</code> will
 change for example into <code>r_file_name</code>.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># To read in your own data you can use read_protti()</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>spectronaut_data  <span class="ot">&lt;-</span> <span class="fu">read_protti</span>(<span class="at">filename =</span> <span class="st">&quot;mydata/spectronaut.csv&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># To read in your own data you can use read_protti()</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>spectronaut_data <span class="ot">&lt;-</span> <span class="fu">read_protti</span>(<span class="at">filename =</span> <span class="st">&quot;mydata/spectronaut.csv&quot;</span>)</span></code></pre></div>
 </div>
 <div id="maxquant" class="section level1">
 <h1>MaxQuant</h1>
@@ -579,46 +579,46 @@ quantification and only use these.</p>
 (minimally required) with the help of the <code>stringr</code> and
 <code>dplyr</code> packages. How to filter your data best is described
 in the data analysis vignettes.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># To read in your own data you can use read_protti()</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>evidence  <span class="ot">&lt;-</span> <span class="fu">read_protti</span>(<span class="at">filename =</span> <span class="st">&quot;yourpath/evidence.txt&quot;</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>evidence_proteotypic <span class="ot">&lt;-</span> evidence <span class="sc">%&gt;%</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># adds new column with logicals that are TRUE if the peptide can be assigned </span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># to only one protein and FALSE if it can be assigned to multiple</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">is_proteotypic =</span> <span class="fu">str_detect</span>(</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">string =</span> proteins,</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="st">&quot;;&quot;</span>,</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">negate =</span> <span class="cn">TRUE</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># adds new column with logicals indicating if peptide is coming from a potential contaminant</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">is_contaminant =</span> <span class="fu">ifelse</span>(potential_contaminant <span class="sc">==</span> <span class="st">&quot;+&quot;</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) </span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Make an annotation data frame and merge it with your data frame to obtain conditions</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co"># We are annotating sample 1-3 as controls and samples 4-6 as treated conditions</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="fu">c</span>( <span class="co"># make sure that the names are the same name as in your report</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;sample1&quot;</span>,</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;sample2&quot;</span>,</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;sample3&quot;</span>,</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;sample4&quot;</span>,</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;sample5&quot;</span>,</span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;sample6&quot;</span></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>condition <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span>,</span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span>,</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span></span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>annotation <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(file_name, condition)</span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine your long data frame with the annotation</span></span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>evidence_annotated <span class="ot">&lt;-</span> evidence_proteotypic <span class="sc">%&gt;%</span> </span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(<span class="at">y =</span> annotation, <span class="at">by =</span> <span class="st">&quot;file_name&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># To read in your own data you can use read_protti()</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>evidence <span class="ot">&lt;-</span> <span class="fu">read_protti</span>(<span class="at">filename =</span> <span class="st">&quot;yourpath/evidence.txt&quot;</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>evidence_proteotypic <span class="ot">&lt;-</span> evidence <span class="sc">%&gt;%</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="co"># adds new column with logicals that are TRUE if the peptide can be assigned</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="co"># to only one protein and FALSE if it can be assigned to multiple</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">is_proteotypic =</span> <span class="fu">str_detect</span>(</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>    <span class="at">string =</span> proteins,</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="st">&quot;;&quot;</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>    <span class="at">negate =</span> <span class="cn">TRUE</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>  <span class="co"># adds new column with logicals indicating if peptide is coming from a potential contaminant</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">is_contaminant =</span> <span class="fu">ifelse</span>(potential_contaminant <span class="sc">==</span> <span class="st">&quot;+&quot;</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>))</span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co"># Make an annotation data frame and merge it with your data frame to obtain conditions</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co"># We are annotating sample 1-3 as controls and samples 4-6 as treated conditions</span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="fu">c</span>( <span class="co"># make sure that the names are the same name as in your report</span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>  <span class="st">&quot;sample1&quot;</span>,</span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a>  <span class="st">&quot;sample2&quot;</span>,</span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>  <span class="st">&quot;sample3&quot;</span>,</span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a>  <span class="st">&quot;sample4&quot;</span>,</span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a>  <span class="st">&quot;sample5&quot;</span>,</span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a>  <span class="st">&quot;sample6&quot;</span></span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a>)</span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a></span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a>condition <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
+<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
+<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
+<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span>,</span>
+<span id="cb3-32"><a href="#cb3-32" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span>,</span>
+<span id="cb3-33"><a href="#cb3-33" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span></span>
+<span id="cb3-34"><a href="#cb3-34" tabindex="-1"></a>)</span>
+<span id="cb3-35"><a href="#cb3-35" tabindex="-1"></a></span>
+<span id="cb3-36"><a href="#cb3-36" tabindex="-1"></a>annotation <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(file_name, condition)</span>
+<span id="cb3-37"><a href="#cb3-37" tabindex="-1"></a></span>
+<span id="cb3-38"><a href="#cb3-38" tabindex="-1"></a><span class="co"># Combine your long data frame with the annotation</span></span>
+<span id="cb3-39"><a href="#cb3-39" tabindex="-1"></a>evidence_annotated <span class="ot">&lt;-</span> evidence_proteotypic <span class="sc">%&gt;%</span></span>
+<span id="cb3-40"><a href="#cb3-40" tabindex="-1"></a>  <span class="fu">left_join</span>(<span class="at">y =</span> annotation, <span class="at">by =</span> <span class="st">&quot;file_name&quot;</span>)</span></code></pre></div>
 </div>
 <div id="protein-centric-analysis-1" class="section level2">
 <h2>Protein-centric analysis</h2>
@@ -634,48 +634,48 @@ Furthermore, we produce an annotation data frame to create a
 remove proteins with potentially low quality. Further filtering for
 decoys and potential contaminants should be performed based on the data
 analysis vignettes.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># To read in your own data you can use read_protti()</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>protein_groups  <span class="ot">&lt;-</span> <span class="fu">read_protti</span>(<span class="at">filename =</span> <span class="st">&quot;yourpath/proteinGroups.txt&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># adds new column with logicals indicating if protein is a potential contaminant, </span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># you can filter these out later on. You should also consider filtering out proteins </span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># that were &quot;only identified by site&quot; and reverse hits, as well as proteins with only </span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># one identified peptide</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">is_potential_contaminant =</span> <span class="fu">ifelse</span>(potential_contaminant <span class="sc">==</span> <span class="st">&quot;+&quot;</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) </span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Change wide format to long format and create new columns called `r_file_name`and `intensity`</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>protein_groups_long <span class="ot">&lt;-</span> protein_groups <span class="sc">%&gt;%</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">&quot;intensity_&quot;</span>),</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">&quot;file_name&quot;</span>,</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">&quot;intensity&quot;</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Make an annotation data frame and merge it with your data frame to obtain conditions</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co"># We are annotating sample 1-3 as controls and samples 4-6 as treated conditions</span></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="fu">c</span>( <span class="co"># make sure that the names are the same name as in your report</span></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;intensity_sample1&quot;</span>,</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;intensity_sample2&quot;</span>,</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;intensity_sample3&quot;</span>,</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;intensity_sample4&quot;</span>,</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;intensity_sample5&quot;</span>,</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;intensity_sample6&quot;</span></span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>condition <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span>,</span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span>,</span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span></span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>annotation <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(file_name, condition)</span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine your long data frame with the annotation</span></span>
-<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>protein_groups_annotated <span class="ot">&lt;-</span> protein_groups_long <span class="sc">%&gt;%</span> </span>
-<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(<span class="at">y =</span> annotation, <span class="at">by =</span> <span class="st">&quot;file_name&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># To read in your own data you can use read_protti()</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>protein_groups <span class="ot">&lt;-</span> <span class="fu">read_protti</span>(<span class="at">filename =</span> <span class="st">&quot;yourpath/proteinGroups.txt&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="co"># adds new column with logicals indicating if protein is a potential contaminant,</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="co"># you can filter these out later on. You should also consider filtering out proteins</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="co"># that were &quot;only identified by site&quot; and reverse hits, as well as proteins with only</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="co"># one identified peptide</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">is_potential_contaminant =</span> <span class="fu">ifelse</span>(potential_contaminant <span class="sc">==</span> <span class="st">&quot;+&quot;</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>))</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co"># Change wide format to long format and create new columns called `r_file_name`and `intensity`</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>protein_groups_long <span class="ot">&lt;-</span> protein_groups <span class="sc">%&gt;%</span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">&quot;intensity_&quot;</span>),</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">&quot;file_name&quot;</span>,</span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">&quot;intensity&quot;</span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>  )</span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co"># Make an annotation data frame and merge it with your data frame to obtain conditions</span></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="co"># We are annotating sample 1-3 as controls and samples 4-6 as treated conditions</span></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="fu">c</span>( <span class="co"># make sure that the names are the same name as in your report</span></span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a>  <span class="st">&quot;intensity_sample1&quot;</span>,</span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a>  <span class="st">&quot;intensity_sample2&quot;</span>,</span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a>  <span class="st">&quot;intensity_sample3&quot;</span>,</span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a>  <span class="st">&quot;intensity_sample4&quot;</span>,</span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a>  <span class="st">&quot;intensity_sample5&quot;</span>,</span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a>  <span class="st">&quot;intensity_sample6&quot;</span></span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a>)</span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a></span>
+<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a>condition <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
+<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
+<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
+<span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span>,</span>
+<span id="cb4-34"><a href="#cb4-34" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span>,</span>
+<span id="cb4-35"><a href="#cb4-35" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span></span>
+<span id="cb4-36"><a href="#cb4-36" tabindex="-1"></a>)</span>
+<span id="cb4-37"><a href="#cb4-37" tabindex="-1"></a></span>
+<span id="cb4-38"><a href="#cb4-38" tabindex="-1"></a>annotation <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(file_name, condition)</span>
+<span id="cb4-39"><a href="#cb4-39" tabindex="-1"></a></span>
+<span id="cb4-40"><a href="#cb4-40" tabindex="-1"></a><span class="co"># Combine your long data frame with the annotation</span></span>
+<span id="cb4-41"><a href="#cb4-41" tabindex="-1"></a>protein_groups_annotated <span class="ot">&lt;-</span> protein_groups_long <span class="sc">%&gt;%</span></span>
+<span id="cb4-42"><a href="#cb4-42" tabindex="-1"></a>  <span class="fu">left_join</span>(<span class="at">y =</span> annotation, <span class="at">by =</span> <span class="st">&quot;file_name&quot;</span>)</span></code></pre></div>
 </div>
 </div>
 <div id="skyline" class="section level1">
@@ -702,43 +702,43 @@ have to combine the precursor intensities to obtain one value for
 protein abundance. This could be done using the
 <code>calculate_protein_abundance()</code> function from
 <strong>protti</strong>.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load data</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>skyline_data <span class="ot">&lt;-</span> <span class="fu">read_protti</span>(<span class="at">filename =</span> <span class="st">&quot;yourpath/skyline.csv&quot;</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>skyline_data_int <span class="ot">&lt;-</span> skyline_data <span class="sc">%&gt;%</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create a column with precursor information</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">precursor =</span> <span class="fu">paste0</span>(peptide_sequence, <span class="st">&quot;_&quot;</span>, charge)) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(replicate_name, precursor) <span class="sc">%&gt;%</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># making a new column containing the summed up intensities of all transitions of one precursor</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sum_intensity =</span> <span class="fu">sum</span>(area)) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(product_mz, area)) <span class="sc">%&gt;%</span> <span class="co"># removing the columns we don&#39;t need</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>() <span class="co"># removing duplicated rows from the data frame</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Add annotation</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co"># make sure that the names are the same name as in your report</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>replicate_name <span class="ot">&lt;-</span> <span class="fu">c</span>( </span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;sample_1&quot;</span>, </span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;sample_2&quot;</span>,</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;sample_3&quot;</span>,</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;sample_1&quot;</span>,</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;sample_2&quot;</span>,</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;sample_3&quot;</span></span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>condition <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span>,</span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span>,</span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span></span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>annotation <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(replicate_name, condition)</span>
-<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine your long data frame with the annotation</span></span>
-<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>skyline_annotated <span class="ot">&lt;-</span> skyline_data_int <span class="sc">%&gt;%</span> </span>
-<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(<span class="at">y =</span> annotation, <span class="at">by =</span> <span class="st">&quot;replicate_name&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Load data</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>skyline_data <span class="ot">&lt;-</span> <span class="fu">read_protti</span>(<span class="at">filename =</span> <span class="st">&quot;yourpath/skyline.csv&quot;</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>skyline_data_int <span class="ot">&lt;-</span> skyline_data <span class="sc">%&gt;%</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="co"># create a column with precursor information</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">precursor =</span> <span class="fu">paste0</span>(peptide_sequence, <span class="st">&quot;_&quot;</span>, charge)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  <span class="fu">group_by</span>(replicate_name, precursor) <span class="sc">%&gt;%</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  <span class="co"># making a new column containing the summed up intensities of all transitions of one precursor</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sum_intensity =</span> <span class="fu">sum</span>(area)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(product_mz, area)) <span class="sc">%&gt;%</span> <span class="co"># removing the columns we don&#39;t need</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>  <span class="fu">distinct</span>() <span class="co"># removing duplicated rows from the data frame</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co"># Add annotation</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co"># make sure that the names are the same name as in your report</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>replicate_name <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>  <span class="st">&quot;sample_1&quot;</span>,</span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>  <span class="st">&quot;sample_2&quot;</span>,</span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>  <span class="st">&quot;sample_3&quot;</span>,</span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>  <span class="st">&quot;sample_1&quot;</span>,</span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>  <span class="st">&quot;sample_2&quot;</span>,</span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a>  <span class="st">&quot;sample_3&quot;</span></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a>)</span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a></span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a>condition <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
+<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
+<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
+<span id="cb5-28"><a href="#cb5-28" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span>,</span>
+<span id="cb5-29"><a href="#cb5-29" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span>,</span>
+<span id="cb5-30"><a href="#cb5-30" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span></span>
+<span id="cb5-31"><a href="#cb5-31" tabindex="-1"></a>)</span>
+<span id="cb5-32"><a href="#cb5-32" tabindex="-1"></a></span>
+<span id="cb5-33"><a href="#cb5-33" tabindex="-1"></a>annotation <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(replicate_name, condition)</span>
+<span id="cb5-34"><a href="#cb5-34" tabindex="-1"></a></span>
+<span id="cb5-35"><a href="#cb5-35" tabindex="-1"></a><span class="co"># Combine your long data frame with the annotation</span></span>
+<span id="cb5-36"><a href="#cb5-36" tabindex="-1"></a>skyline_annotated <span class="ot">&lt;-</span> skyline_data_int <span class="sc">%&gt;%</span></span>
+<span id="cb5-37"><a href="#cb5-37" tabindex="-1"></a>  <span class="fu">left_join</span>(<span class="at">y =</span> annotation, <span class="at">by =</span> <span class="st">&quot;replicate_name&quot;</span>)</span></code></pre></div>
 </div>
 <div id="proteome-discoverer" class="section level1">
 <h1>Proteome Discoverer</h1>
@@ -777,61 +777,61 @@ observations that are labeled <code>&quot;No Quan Values&quot;</code> in the
 <code>quan_info</code> column. In the below example they are filtered
 out at this step, but you can keep them and only filter them out
 later.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load data</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>pd_pep_data <span class="ot">&lt;-</span> <span class="fu">read_protti</span>(<span class="st">&quot;yourpath/PDpeptides.csv&quot;</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Select relevant columns</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>pd_pep_selected <span class="ot">&lt;-</span> pd_pep_data <span class="sc">%&gt;%</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    sequence,</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    modifications,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    number_proteins,</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    contaminant,</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    master_protein_accessions,</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">starts_with</span>(<span class="st">&quot;abundances_grouped&quot;</span>), <span class="co"># select all columns that start with &quot;abundances_grouped&quot;</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    quan_info</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter data frame</span></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>pd_pep_filtered <span class="ot">&lt;-</span> pd_pep_selected <span class="sc">%&gt;%</span></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(contaminant <span class="sc">==</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span> <span class="co"># remove annotated contaminants</span></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(number_proteins <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="co"># select proteotypic peptides</span></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(quan_info <span class="sc">!=</span> <span class="st">&quot;No Quan Values&quot;</span>) <span class="co"># remove peptides that have no quantification values</span></span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert into long format</span></span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>pd_pep_long <span class="ot">&lt;-</span> pd_pep_filtered <span class="sc">%&gt;%</span></span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">&quot;abundances&quot;</span>),</span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">&quot;file_name&quot;</span>,</span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">&quot;intensity&quot;</span></span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>  <span class="co"># combine peptide sequence and modifications to make a precursor column</span></span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">precursor =</span> <span class="fu">paste</span>(sequence, modifications)) </span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Make annotation data frame</span></span>
-<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="fu">c</span>( <span class="co"># make sure that the names are the same name as in your report</span></span>
-<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;abundances_grouped_f1&quot;</span>,</span>
-<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;abundances_grouped_f2&quot;</span>,</span>
-<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;abundances_grouped_f3&quot;</span>,</span>
-<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;abundances_grouped_f4&quot;</span>,</span>
-<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;abundances_grouped_f5&quot;</span>,</span>
-<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;abundances_grouped_f6&quot;</span></span>
-<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>condition <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
-<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
-<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
-<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span>,</span>
-<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span>,</span>
-<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span></span>
-<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>annotation <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(file_name, condition)</span>
-<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine your long data frame with the annotation</span></span>
-<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>pd_pep_long_annotated <span class="ot">&lt;-</span> pd_pep_long <span class="sc">%&gt;%</span> </span>
-<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(<span class="at">y =</span> annotation, <span class="at">by =</span> <span class="st">&quot;file_name&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Load data</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>pd_pep_data <span class="ot">&lt;-</span> <span class="fu">read_protti</span>(<span class="st">&quot;yourpath/PDpeptides.csv&quot;</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co"># Select relevant columns</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>pd_pep_selected <span class="ot">&lt;-</span> pd_pep_data <span class="sc">%&gt;%</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>    sequence,</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>    modifications,</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>    number_proteins,</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>    contaminant,</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>    master_protein_accessions,</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>    <span class="fu">starts_with</span>(<span class="st">&quot;abundances_grouped&quot;</span>), <span class="co"># select all columns that start with &quot;abundances_grouped&quot;</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>    quan_info</span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>  )</span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="co"># Filter data frame</span></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a>pd_pep_filtered <span class="ot">&lt;-</span> pd_pep_selected <span class="sc">%&gt;%</span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a>  <span class="fu">filter</span>(contaminant <span class="sc">==</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span> <span class="co"># remove annotated contaminants</span></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a>  <span class="fu">filter</span>(number_proteins <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="co"># select proteotypic peptides</span></span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a>  <span class="fu">filter</span>(quan_info <span class="sc">!=</span> <span class="st">&quot;No Quan Values&quot;</span>) <span class="co"># remove peptides that have no quantification values</span></span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a></span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a><span class="co"># Convert into long format</span></span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a>pd_pep_long <span class="ot">&lt;-</span> pd_pep_filtered <span class="sc">%&gt;%</span></span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">&quot;abundances&quot;</span>),</span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">&quot;file_name&quot;</span>,</span>
+<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">&quot;intensity&quot;</span></span>
+<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a>  <span class="co"># combine peptide sequence and modifications to make a precursor column</span></span>
+<span id="cb6-30"><a href="#cb6-30" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">precursor =</span> <span class="fu">paste</span>(sequence, modifications))</span>
+<span id="cb6-31"><a href="#cb6-31" tabindex="-1"></a></span>
+<span id="cb6-32"><a href="#cb6-32" tabindex="-1"></a><span class="co"># Make annotation data frame</span></span>
+<span id="cb6-33"><a href="#cb6-33" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="fu">c</span>( <span class="co"># make sure that the names are the same name as in your report</span></span>
+<span id="cb6-34"><a href="#cb6-34" tabindex="-1"></a>  <span class="st">&quot;abundances_grouped_f1&quot;</span>,</span>
+<span id="cb6-35"><a href="#cb6-35" tabindex="-1"></a>  <span class="st">&quot;abundances_grouped_f2&quot;</span>,</span>
+<span id="cb6-36"><a href="#cb6-36" tabindex="-1"></a>  <span class="st">&quot;abundances_grouped_f3&quot;</span>,</span>
+<span id="cb6-37"><a href="#cb6-37" tabindex="-1"></a>  <span class="st">&quot;abundances_grouped_f4&quot;</span>,</span>
+<span id="cb6-38"><a href="#cb6-38" tabindex="-1"></a>  <span class="st">&quot;abundances_grouped_f5&quot;</span>,</span>
+<span id="cb6-39"><a href="#cb6-39" tabindex="-1"></a>  <span class="st">&quot;abundances_grouped_f6&quot;</span></span>
+<span id="cb6-40"><a href="#cb6-40" tabindex="-1"></a>)</span>
+<span id="cb6-41"><a href="#cb6-41" tabindex="-1"></a></span>
+<span id="cb6-42"><a href="#cb6-42" tabindex="-1"></a>condition <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb6-43"><a href="#cb6-43" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
+<span id="cb6-44"><a href="#cb6-44" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
+<span id="cb6-45"><a href="#cb6-45" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
+<span id="cb6-46"><a href="#cb6-46" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span>,</span>
+<span id="cb6-47"><a href="#cb6-47" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span>,</span>
+<span id="cb6-48"><a href="#cb6-48" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span></span>
+<span id="cb6-49"><a href="#cb6-49" tabindex="-1"></a>)</span>
+<span id="cb6-50"><a href="#cb6-50" tabindex="-1"></a></span>
+<span id="cb6-51"><a href="#cb6-51" tabindex="-1"></a>annotation <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(file_name, condition)</span>
+<span id="cb6-52"><a href="#cb6-52" tabindex="-1"></a></span>
+<span id="cb6-53"><a href="#cb6-53" tabindex="-1"></a><span class="co"># Combine your long data frame with the annotation</span></span>
+<span id="cb6-54"><a href="#cb6-54" tabindex="-1"></a>pd_pep_long_annotated <span class="ot">&lt;-</span> pd_pep_long <span class="sc">%&gt;%</span></span>
+<span id="cb6-55"><a href="#cb6-55" tabindex="-1"></a>  <span class="fu">left_join</span>(<span class="at">y =</span> annotation, <span class="at">by =</span> <span class="st">&quot;file_name&quot;</span>)</span></code></pre></div>
 </div>
 <div id="protein-centric-analysis-2" class="section level2">
 <h2>Protein-centric analysis</h2>
@@ -851,56 +851,56 @@ file, simply by opening it and saving it as such.</p>
 select the columns we are interested in. Similar to above you can either
 filter the <code>contaminant</code> and <code>number_peptides</code>
 columns now or later.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load data</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>pd_prot_data <span class="ot">&lt;-</span> <span class="fu">read_protti</span>(<span class="st">&quot;yourpath/PDproteins.csv&quot;</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Select relevant columns</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>pd_prot_selected <span class="ot">&lt;-</span> pd_prot_data <span class="sc">%&gt;%</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    accession,</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    description,</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    contaminant,</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    number_peptides,</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">starts_with</span>(<span class="st">&quot;abundances_grouped&quot;</span>), <span class="co"># select all columns that start with &quot;abundances_grouped&quot;</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter data frame</span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>pd_prot_data_filtered <span class="ot">&lt;-</span> pd_prot_selected <span class="sc">%&gt;%</span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(contaminant <span class="sc">==</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span> <span class="co"># remove annotated contaminants</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(number_peptides <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="co"># select proteins with more than one identified peptide</span></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert into long format</span></span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>pd_prot_long <span class="ot">&lt;-</span> pd_prot_data_filtered <span class="sc">%&gt;%</span></span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">&quot;abundances&quot;</span>),</span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">&quot;file_name&quot;</span>,</span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">&quot;intensity&quot;</span></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Make annotation data frame</span></span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="fu">c</span>( <span class="co"># make sure that the names are the same name as in your report</span></span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;abundances_grouped_f1&quot;</span>,</span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;abundances_grouped_f2&quot;</span>,</span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;abundances_grouped_f3&quot;</span>,</span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;abundances_grouped_f4&quot;</span>,</span>
-<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;abundances_grouped_f5&quot;</span>,</span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;abundances_grouped_f6&quot;</span></span>
-<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>condition <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
-<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
-<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
-<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span>,</span>
-<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span>,</span>
-<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span></span>
-<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>annotation <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(file_name, condition)</span>
-<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine your long data frame with the annotation</span></span>
-<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>pd_prot_long_annotated <span class="ot">&lt;-</span> pd_prot_long <span class="sc">%&gt;%</span> </span>
-<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(<span class="at">y =</span> annotation, <span class="at">by =</span> <span class="st">&quot;file_name&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Load data</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>pd_prot_data <span class="ot">&lt;-</span> <span class="fu">read_protti</span>(<span class="st">&quot;yourpath/PDproteins.csv&quot;</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co"># Select relevant columns</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>pd_prot_selected <span class="ot">&lt;-</span> pd_prot_data <span class="sc">%&gt;%</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>    accession,</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>    description,</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>    contaminant,</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>    number_peptides,</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>    <span class="fu">starts_with</span>(<span class="st">&quot;abundances_grouped&quot;</span>), <span class="co"># select all columns that start with &quot;abundances_grouped&quot;</span></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>  )</span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co"># Filter data frame</span></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>pd_prot_data_filtered <span class="ot">&lt;-</span> pd_prot_selected <span class="sc">%&gt;%</span></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>  <span class="fu">filter</span>(contaminant <span class="sc">==</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span> <span class="co"># remove annotated contaminants</span></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>  <span class="fu">filter</span>(number_peptides <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="co"># select proteins with more than one identified peptide</span></span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a><span class="co"># Convert into long format</span></span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a>pd_prot_long <span class="ot">&lt;-</span> pd_prot_data_filtered <span class="sc">%&gt;%</span></span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">&quot;abundances&quot;</span>),</span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">&quot;file_name&quot;</span>,</span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">&quot;intensity&quot;</span></span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a>  )</span>
+<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a></span>
+<span id="cb7-27"><a href="#cb7-27" tabindex="-1"></a><span class="co"># Make annotation data frame</span></span>
+<span id="cb7-28"><a href="#cb7-28" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="fu">c</span>( <span class="co"># make sure that the names are the same name as in your report</span></span>
+<span id="cb7-29"><a href="#cb7-29" tabindex="-1"></a>  <span class="st">&quot;abundances_grouped_f1&quot;</span>,</span>
+<span id="cb7-30"><a href="#cb7-30" tabindex="-1"></a>  <span class="st">&quot;abundances_grouped_f2&quot;</span>,</span>
+<span id="cb7-31"><a href="#cb7-31" tabindex="-1"></a>  <span class="st">&quot;abundances_grouped_f3&quot;</span>,</span>
+<span id="cb7-32"><a href="#cb7-32" tabindex="-1"></a>  <span class="st">&quot;abundances_grouped_f4&quot;</span>,</span>
+<span id="cb7-33"><a href="#cb7-33" tabindex="-1"></a>  <span class="st">&quot;abundances_grouped_f5&quot;</span>,</span>
+<span id="cb7-34"><a href="#cb7-34" tabindex="-1"></a>  <span class="st">&quot;abundances_grouped_f6&quot;</span></span>
+<span id="cb7-35"><a href="#cb7-35" tabindex="-1"></a>)</span>
+<span id="cb7-36"><a href="#cb7-36" tabindex="-1"></a></span>
+<span id="cb7-37"><a href="#cb7-37" tabindex="-1"></a>condition <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb7-38"><a href="#cb7-38" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
+<span id="cb7-39"><a href="#cb7-39" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
+<span id="cb7-40"><a href="#cb7-40" tabindex="-1"></a>  <span class="st">&quot;control&quot;</span>,</span>
+<span id="cb7-41"><a href="#cb7-41" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span>,</span>
+<span id="cb7-42"><a href="#cb7-42" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span>,</span>
+<span id="cb7-43"><a href="#cb7-43" tabindex="-1"></a>  <span class="st">&quot;treated&quot;</span></span>
+<span id="cb7-44"><a href="#cb7-44" tabindex="-1"></a>)</span>
+<span id="cb7-45"><a href="#cb7-45" tabindex="-1"></a></span>
+<span id="cb7-46"><a href="#cb7-46" tabindex="-1"></a>annotation <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(file_name, condition)</span>
+<span id="cb7-47"><a href="#cb7-47" tabindex="-1"></a></span>
+<span id="cb7-48"><a href="#cb7-48" tabindex="-1"></a><span class="co"># Combine your long data frame with the annotation</span></span>
+<span id="cb7-49"><a href="#cb7-49" tabindex="-1"></a>pd_prot_long_annotated <span class="ot">&lt;-</span> pd_prot_long <span class="sc">%&gt;%</span></span>
+<span id="cb7-50"><a href="#cb7-50" tabindex="-1"></a>  <span class="fu">left_join</span>(<span class="at">y =</span> annotation, <span class="at">by =</span> <span class="st">&quot;file_name&quot;</span>)</span></code></pre></div>
 </div>
 </div>
 <div id="other-search-engines-and-software" class="section level1">
