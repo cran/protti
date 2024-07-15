@@ -78,6 +78,8 @@ if (build_vignette_on_cran == FALSE) {
 #      response = normalised_intensity_log2,
 #      dose = r_condition,
 #      filter = "post",
+#      n_replicate_completeness = 2, # specifiy this based on your data and cutoff criteria
+#      n_condition_completeness = 4, # specifiy this based on your data and cutoff criteria
 #      retain_columns = c(pg_protein_accessions)
 #    )
 #  
@@ -95,7 +97,9 @@ if (build_vignette_on_cran == FALSE) {
 #      response = normalised_intensity_log2,
 #      dose = r_condition,
 #      retain_columns = c(pg_protein_accessions),
-#      n_cores = 3
+#      n_cores = 3,
+#      n_replicate_completeness = 2, # specifiy this based on your data and cutoff criteria
+#      n_condition_completeness = 4, # specifiy this based on your data and cutoff criteria
 #    )
 #  
 #  # remove workers again after you are done
@@ -129,6 +133,7 @@ if (build_vignette_on_cran == FALSE) {
 #    response = normalised_intensity_log2,
 #    targets = "_VFDVELLKLE_.2",
 #    unit = "pM",
+#    x_axis_limits = c(10, 1e+08),
 #    export = FALSE
 #  )
 

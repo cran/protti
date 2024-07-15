@@ -12,7 +12,7 @@
 
 <meta name="author" content="Jan-Philipp Quast" />
 
-<meta name="date" content="2024-03-27" />
+<meta name="date" content="2024-07-12" />
 
 <title>Dose-Response Data Analysis Workflow</title>
 
@@ -340,7 +340,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Dose-Response Data Analysis Workflow</h1>
 <h4 class="author">Jan-Philipp Quast</h4>
-<h4 class="date">2024-03-27</h4>
+<h4 class="date">2024-07-12</h4>
 
 
 
@@ -396,9 +396,9 @@ drug binding sites in complex proteomes (<a href="https://www.nature.com/article
 2020</a>). Since LiP-MS data is analysed on the peptide or precursor*
 level, using additional information about peptide behaviour from
 multiple conditions reduces false discovery rate.</p>
-<p>_*A peptide precursor is the actual molecular unit that was detected
-on the mass spectrometer. This is a peptide with one specific charge
-state and its modification(s)._</p>
+<p><em>A peptide precursor is the actual molecular unit that was
+detected on the mass spectrometer. This is a peptide with one specific
+charge state and its modification(s).</em></p>
 </div>
 <div id="getting-started" class="section level1">
 <h1>Getting started</h1>
@@ -582,6 +582,15 @@ fit. If you want to perform enrichment analysis later on you should keep
 the default <code>filter = &quot;post&quot;</code>. This will fit all possible
 models and then only annotate models based on whether they passed or
 failed the filtering step (<code>passed_filter</code>).</p>
+<p>Since <strong>protti</strong> version <code>0.8.0</code> we recommend
+you use the <code>n_replicate_completeness</code> and
+<code>n_condition_completeness</code> arguments in order to define
+cutoffs for completeness of replicates in a given number of conditions.
+This makes the output of the function reproducible independent of the
+input data. With the provided cutoffs below we define that at least 2
+replicates need to be detected in 4 conditions. Any precursor with less
+completeness than that will not be considered and removed from the
+data.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>fit <span class="ot">&lt;-</span> data_normalised <span class="sc">%&gt;%</span></span>
 <span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="fu">fit_drc_4p</span>(</span>
 <span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>    <span class="at">sample =</span> r_file_name,</span>
@@ -589,10 +598,12 @@ failed the filtering step (<code>passed_filter</code>).</p>
 <span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>    <span class="at">response =</span> normalised_intensity_log2,</span>
 <span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>    <span class="at">dose =</span> r_condition,</span>
 <span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>    <span class="at">filter =</span> <span class="st">&quot;post&quot;</span>,</span>
-<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>    <span class="at">retain_columns =</span> <span class="fu">c</span>(pg_protein_accessions)</span>
-<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>  )</span>
-<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a></span>
-<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="co"># make sure to retain columns that you need later but that are not part of the function</span></span></code></pre></div>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>    <span class="at">n_replicate_completeness =</span> <span class="dv">2</span>, <span class="co"># specifiy this based on your data and cutoff criteria</span></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>    <span class="at">n_condition_completeness =</span> <span class="dv">4</span>, <span class="co"># specifiy this based on your data and cutoff criteria</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>    <span class="at">retain_columns =</span> <span class="fu">c</span>(pg_protein_accessions)</span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>  )</span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a><span class="co"># make sure to retain columns that you need later but that are not part of the function</span></span></code></pre></div>
 <p>If you have to fit many models this function may take about an hour
 or longer. If you have the computational resources you can speed this up
 by using <code>parallel_fit_drc_4p()</code>, a parallelised version of
@@ -615,11 +626,13 @@ environment preparation etc.) all cores.</em></p>
 <span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>    <span class="at">response =</span> normalised_intensity_log2,</span>
 <span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>    <span class="at">dose =</span> r_condition,</span>
 <span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>    <span class="at">retain_columns =</span> <span class="fu">c</span>(pg_protein_accessions),</span>
-<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>    <span class="at">n_cores =</span> <span class="dv">3</span></span>
-<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>  )</span>
-<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a></span>
-<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a><span class="co"># remove workers again after you are done</span></span>
-<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a>future<span class="sc">::</span><span class="fu">plan</span>(future<span class="sc">::</span>sequential)</span></code></pre></div>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>    <span class="at">n_cores =</span> <span class="dv">3</span>,</span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>    <span class="at">n_replicate_completeness =</span> <span class="dv">2</span>, <span class="co"># specifiy this based on your data and cutoff criteria</span></span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>    <span class="at">n_condition_completeness =</span> <span class="dv">4</span>, <span class="co"># specifiy this based on your data and cutoff criteria</span></span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a>  )</span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a></span>
+<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a><span class="co"># remove workers again after you are done</span></span>
+<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a>future<span class="sc">::</span><span class="fu">plan</span>(future<span class="sc">::</span>sequential)</span></code></pre></div>
 <p>If we examine all precursors based on their rank (calculated from
 correlation and ANOVA q-value), we can see that as expected most of them
 are FKBP12 (P62942) peptides. One benefit of analysing LiP-MS data on
@@ -639,11 +652,11 @@ return plots for all precursors with <code>targets = &quot;all&quot;</code>. Mak
 sure that the number of plots is reasonable to return within R. You can
 also directly export your plots by setting
 <code>export = TRUE</code>.</p>
-<p>Note: The output of <code>fit_drc_4p()</code> includes two columns
-with data frames containing the model and original data points required
-for the plot. These data frames contain the original names for
+<p><em>Note: The output of <code>fit_drc_4p()</code> includes two
+columns with data frames containing the model and original data points
+required for the plot. These data frames contain the original names for
 <code>dose</code> and <code>response</code> that you provided to
-<code>fit_drc_4p()</code>.</p>
+<code>fit_drc_4p()</code>.</em></p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># Model plotting</span></span>
 <span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="fu">drc_4p_plot</span>(fit,</span>
 <span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="at">grouping =</span> eg_precursor_id,</span>
@@ -651,8 +664,16 @@ for the plot. These data frames contain the original names for
 <span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>  <span class="at">response =</span> normalised_intensity_log2,</span>
 <span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>  <span class="at">targets =</span> <span class="st">&quot;_VFDVELLKLE_.2&quot;</span>,</span>
 <span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>  <span class="at">unit =</span> <span class="st">&quot;pM&quot;</span>,</span>
-<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>  <span class="at">export =</span> <span class="cn">FALSE</span></span>
-<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>  <span class="at">x_axis_limits =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="fl">1e+08</span>),</span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>  <span class="at">export =</span> <span class="cn">FALSE</span></span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>)</span></code></pre></div>
+<p>There are additional arguments that help you customise your plot. You
+can for example specify the axis limits with <code>x_axis_limits</code>.
+This should generally always be set to the lowest non-zero and highest
+concentration <code>x_axis_limits = c(10, 1e+08)</code>. Like this you
+can more easily see if extreme concentrations are completely missing
+from the curve. The <code>colours</code> argument allows you to specify
+your own colours for the points, confidence interval and curve.</p>
 </div>
 </div>
 <div id="further-analysis" class="section level1">
