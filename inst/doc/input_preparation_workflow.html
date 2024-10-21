@@ -12,7 +12,7 @@
 
 <meta name="author" content="Dina Schuster" />
 
-<meta name="date" content="2024-07-12" />
+<meta name="date" content="2024-10-22" />
 
 <title>Input Preparation Workflow</title>
 
@@ -51,7 +51,7 @@ overflow: visible;
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -62,7 +62,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -340,7 +340,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Input Preparation Workflow</h1>
 <h4 class="author">Dina Schuster</h4>
-<h4 class="date">2024-07-12</h4>
+<h4 class="date">2024-10-22</h4>
 
 
 
@@ -446,10 +446,9 @@ However, it is also possible to calculate protein intensities directly
 from precursor intensities with the <strong>protti</strong> function
 <code>calculate_protein_abundance()</code>. <strong>Protti</strong>
 implements the <code>&quot;iq&quot;</code> method, previously implemented in the R
-package <a href="https://academic.oup.com/bioinformatics/article/36/8/2611/5697917"><code>iq</code></a>
+package <a href="https://doi.org/10.1093/bioinformatics/btz961"><code>iq</code></a>
 which performs protein quantification based on the maximal peptide ratio
-extraction algorithm adapted from the MaxLFQ algorithm (<a href="https://www.sciencedirect.com/science/article/pii/S1535947620333107?via%3Dihub">Cox,
-J. 2013</a>).</p>
+extraction algorithm adapted from the MaxLFQ algorithm (<a href="https://doi.org/10.1074/mcp.M113.031591">Cox, J. 2013</a>).</p>
 <p>One advantage of calculating the protein abundance with
 <strong>protti</strong> is the possibility to median normalise run
 intensities on the precursor level. This is closer to the actually
